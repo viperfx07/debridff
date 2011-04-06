@@ -1,0 +1,86 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+            "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<script type="text/javascript" src="jquery.js"></script>
+	<script type="text/javascript" src="content.js"></script>
+	<script type="text/javascript">
+	//Get backgroundpage
+	bg = chrome.extension.getBackgroundPage();
+		
+	function setGenerateButton()
+	{
+		//debridmax button
+		var host_url;
+		$("#generate").click(function(){
+		links = $("#link").val();
+		host_url = setHost((links.split("\n"))[0]);
+		
+		if(host_url == MU_DM)
+		{
+			if($("#mu_pass").val() != "")
+				links = links + "&" + $("#mu_pass").val();
+			else
+				links = links + "&" + "";
+		}
+		
+		bg.generateBy(host_url,links);
+		});
+	}
+	
+	//Open login page in new tab
+	function goToDebridMax()
+	{
+		chrome.tabs.create({url:chrome.i18n.getMessage("background_debridmax_url")});
+	}
+	
+	$(document).ready(function(){
+	   
+		$.ajaxSetup ({  
+				cache: false
+				});
+		
+		//Draw generate buttons
+		setGenerateButton();
+		
+		//set the text based on internationalization
+		$("#text1").html(chrome.i18n.getMessage("submissionWindows_note"));
+		$("#text2").html(chrome.i18n.getMessage("submissionWindows_title"));
+		$("#mu_pass_note").html(chrome.i18n.getMessage("submissionWindow_mu_password"));
+		$("#logo").html("<a href='javascript:goToDebridMax();'><img src='logo.png' /></a>");
+		
+		
+	});
+	
+	</script>
+
+	<style type="text/css">
+	body {
+		background: #000000;
+		margin: 0;
+		padding: 0;
+		font: 11px normal Verdana, Arial, Helvetica, sans-serif;
+		color: #fff;
+		width:435px;
+		overflow-x:hidden;
+	}
+
+	.container {height:350px; width: 435px; margin: 10px auto; float:left;}
+	
+	</style>
+</head>
+
+<body>
+	<div id="logo"></div>
+	<div class="container">
+		<div id="text1"></div>
+		<span id="text2"></span>
+		<textarea id="link" cols="48" rows="10"></textarea>
+		<br />
+		<span id="mu_pass_note"></span><input id="mu_pass" type="text" name="mu_pass" />
+		<br />
+		<center><input type="button" id="generate" value="GO"/></center>
+	</div>
+	
+</body>
+</html>
