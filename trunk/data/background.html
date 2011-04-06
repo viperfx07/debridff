@@ -1,0 +1,291 @@
+<html>
+<head>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="content.js"></script>
+<script>
+localStorage["badge"] = "";
+localStorage["generateSuccessful"] = 0;
+localStorage["auto-generate-click"] = 0;
+
+//First thing to do
+function init() {
+	//BEGIN Preparing to set status
+	login_details = {
+	'DM' : {'user':'','limit':'','quota':''}
+	};
+	
+	setBadge("...");
+	$.ajaxSetup ({ cache: false	});
+	dmStatus = isLoginToDebridmax();
+	//END Preparing to set status
+	
+	return dmStatus;
+}
+
+function createContextMenu() {
+	// Create context menus
+	var contexts = ["selection"];
+	var parent = chrome.contextMenus.create({"title": chrome.i18n.getMessage("background_download"),"onclick": OnContextClick,"contexts":contexts});
+}
+
+//context menu onclick function
+function OnContextClick(info, tab) {
+	var thelinks = info.selectionText;
+
+	var host_url;
+	host_url = setHost((thelinks.split("\n"))[0]);
+
+	if(host_url == MU_DM)
+	{
+		if($("#mu_pass").val() != "")
+			thelinks = thelinks + "&" + $("#mu_pass").val();
+		else
+			thelinks = thelinks + "&" + "";
+	}
+
+	generateBy(host_url,thelinks);
+
+}
+
+//Check DebridMax Login status
+function isLoginToDebridmax() {
+	ajax_url = chrome.i18n.getMessage("background_debridmax_url") + "rapidshare";
+	
+	$.ajax({
+  	type:"GET",
+	url: ajax_url,
+	async: false,
+	timeout: 30000,
+	success:function(data, request, status){
+		isLoginOK = 0;
+		index=0;
+		
+		if(data.indexOf(chrome.i18n.getMessage("background_debridmax_login_warning"))>=0) // Not Logged in
+		{
+			
+			isLoginOK=0;
+			login_details.DM.user=chrome.i18n.getMessage("background_notloggedin") + '(<a href=javascript:openLoginForm("' + chrome.i18n.getMessage("background_debridmax_url") + "login.php" + '")>'+chrome.i18n.getMessage("background_login_link")+'</a>).';
+		}
+		else //Logged in
+		{
+			isLoginOK=1;
+			
+			var username = $("h3",data).html();
+			
+			var rsdm_details = [];
+			$("div.entry>p",data).each(function(i){
+				rsdm_details[index]=$(this).text();
+				index++;
+			});
+			
+			var limit = (rsdm_details[0].split(" "))[4];
+			var quota = (parseFloat((rsdm_details[1].split(" "))[0])/1000000).toFixed(3);
+			
+			login_details.DM.user = username;
+			login_details.DM.limit = "<b>"+chrome.i18n.getMessage("background_RS_limit") +"</b> " + limit + " " + chrome.i18n.getMessage("background_files");
+			login_details.DM.quota = "<b>"+chrome.i18n.getMessage("background_RS_credits") +"</b> " + quota + " GB" ;
+		} 
+	},
+	error:function(data){
+			isLoginOK=0;
+			login_details.DM.user=chrome.i18n.getMessage("background_notloggedin") + '(<a href=javascript:openLoginForm("' + chrome.i18n.getMessage("background_debridmax_url") + "login.php" + '")>'+chrome.i18n.getMessage("background_login_link")+'</a>).';
+	}
+	});
+	
+	badgeText = "";
+	if(isLoginOK > 0)
+		badgeText = 'v';
+	else
+		badgeText = 'x';
+	
+	setBadge(badgeText);
+	localStorage["badge"] = badgeText;
+	return isLoginOK;
+}
+
+//Set badge color and text
+function setBadge(s) { 
+	chrome.browserAction.setBadgeText({ text: s }) ;
+	if(s=='v')
+		chrome.browserAction.setBadgeBackgroundColor({color:[0, 255, 0, 255]});
+	else
+		chrome.browserAction.setBadgeBackgroundColor({color:[255, 0, 0, 255]});
+	
+}
+
+//close particular window
+function closeWindow(windowLink) {
+		//Focus to submissionWindow
+		chrome.windows.getAll({populate: true}, function(windows) { 
+			for (var w in windows) { 
+				var tabs = windows[w].tabs 
+				for (var t in tabs) { 
+				var url = tabs[t].url; 
+					if (url.indexOf(windowLink) > 0) { 
+						var id = tabs[t].id; 
+						chrome.tabs.remove(id); 
+					} 
+				}		 
+			} 
+		}); 
+}	
+
+//Open Window containing the premium links
+function openLinksWindow(linksarray,textInLink,totallinks,theURL) {
+	var viewTabUrl = chrome.extension.getURL('generated_link.html');
+	
+	var views = chrome.extension.getViews();
+	for(var i = 0; i< views.length; i++)
+	{
+		var view = views[i];
+		if(view.location.href == viewTabUrl)
+		{
+			view.setLinks(linksarray,textInLink,totallinks,theURL);
+			break;
+		}
+	}
+	setBadge(localStorage["badge"]);
+}
+
+//Generate premium download links
+function generateBy(theURL,linksControlValue) {
+	setBadge("...");
+	
+	postdata="";
+	err="";
+	totallinks=0;
+	linksControlValue = jQuery.trim(linksControlValue);
+	
+	// DebridMax
+	switch(theURL)
+	{
+		case RS_DM :
+			postdata = "rslinks="+encodeURIComponent(linksControlValue);
+			break;
+		
+		case MU_DM :
+			var value = linksControlValue.split("&");
+			postdata = "link="+encodeURIComponent(value[0])+"&pass="+encodeURIComponent(value[1]);
+			break;
+		
+		case HF_DM :
+			postdata = "hotlink="+encodeURIComponent(linksControlValue);
+			break;
+		
+		case UL_DM :
+			postdata = "up_link="+encodeURIComponent(linksControlValue);
+			break;
+		
+		case FN_DM :
+			postdata = "fs_link="+encodeURIComponent(linksControlValue);
+			break;
+			
+		case FS_DM :
+			postdata = "fs_link="+encodeURIComponent(linksControlValue);
+			break;
+			
+		case DF_DM :
+			postdata = "url="+encodeURIComponent(linksControlValue);
+			break;
+			
+		case VBB_DM:
+			postdata = "link="+encodeURIComponent(linksControlValue);
+			break;
+			
+		case UD_DM:
+			postdata = "uplink="+encodeURIComponent(linksControlValue);
+			break;
+	}
+	
+	postdata += "&x=99&y=99"; // random numbers are allowed for x and y.
+	
+	var index=0;
+	var linksarray = [];
+	var textInLink = [];
+	
+	gen_window = window.open('generated_link.html','name','height=300,width=510');
+	gen_window.focus();
+	
+	$.ajax({
+	type:"POST",
+	timeout: 30000,
+	url: theURL + "index.php",
+	data: postdata,
+	success:function(msg)
+	{
+		$("div.entry > p > a, div.entry > form ~ a",msg).each(function(i)
+		{
+			linksarray[index]=$(this).attr('href');
+			textInLink[index]=$(this).text();
+			index++;
+		});
+		
+		if(index>0)
+		{
+			openLinksWindow(linksarray,textInLink,index,theURL);
+		}
+		else
+		{
+			alert("DebridMax: " + chrome.i18n.getMessage("background_error_when_generate") + " " + chrome.i18n.getMessage("background_verify_message"));
+			closeWindow('generated_link.html');
+		}	
+	},
+	
+	error: function(msg){
+		alert("DebridMax: Timeout. " + chrome.i18n.getMessage("background_verify_message"));
+		closeWindow('generated_link.html');
+	}
+				
+	});
+		
+	setBadge('v');
+		
+	return true;
+  }
+
+function copyToClipboard(str)
+{
+	var obj = document.getElementById("temp");
+	if(obj)
+	{
+		obj.value = str;
+		obj.select();
+		document.execCommand("copy",false,null);
+		alert(chrome.i18n.getMessage("background_links_copied"));
+	}
+}  
+ 
+//Listener for the request 
+chrome.extension.onRequest.addListener(
+  function(request, sender, sendResponse) {
+    if(request.requestType == "dl")
+	{
+		if(isLoginToDebridmax() == 1)
+			generateBy(request.the_host,request.the_links);
+		else
+			alert(chrome.i18n.getMessage("background_notloggedin"));
+	}
+	else if(request.requestType == "cp")
+	{
+		if(request.the_links)
+			copyToClipboard(request.the_links);
+	}
+	else if(request.requestType == "getAutoGenVal")
+	{
+		sendResponse({auto_gen_val: localStorage["auto-generate-click"]});
+	}
+	else if(request.requestType == "checkLogin")
+	{
+		sendResponse({isLogin: isLoginToDebridmax()});
+	}
+  }); 
+</script>
+</head>
+<body>
+<script>
+	init();
+	createContextMenu();
+</script>
+<input id="temp" value="" /> 
+</body>
+</html>

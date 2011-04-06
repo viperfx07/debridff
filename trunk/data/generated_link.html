@@ -1,0 +1,55 @@
+<html>
+<head>	
+	<script src="jquery.js"></script>
+	<script src="const.js"></script>
+	<script type="text/javascript">
+	function setLinks(linksarray,textInLink,totallinks,theURL)
+	{
+		var links="";
+		var anchorlinks="";
+		var startIndex = 0;
+		var endIndex;
+		
+		endIndex = startIndex + totallinks - 1
+				
+		for(i=startIndex;i<=endIndex;i++)
+		{
+			links+=linksarray[i]+"\r\n";
+			anchorlinks += chrome.i18n.getMessage("generatedlink_link") + (i+1) + ': <a href='+linksarray[i]+'>'+textInLink[i]+'</a><br/>';
+		}
+		
+		document.getElementById('links').value += links;
+		$("#anchorlinks").append(anchorlinks);
+		$("#loader").hide();
+		$("#links").attr('rows',totallinks*2)
+	}
+		
+	$(document).ready(function(){
+	
+		//set the text based on internationalization
+		$("h1").text(chrome.i18n.getMessage("generatedlink_download_links"));
+		$("#text1").text(chrome.i18n.getMessage("generatedlink_first_line_note"));
+		$("#text2").text(chrome.i18n.getMessage("generatedlink_second_line_note"));
+			
+		$("#copy").val(chrome.i18n.getMessage("generatedlink_copy_button"));
+		$("#loader").show();
+		$("#copy").click(function(){ 
+			chrome.extension.sendRequest({requestType:"cp", the_links:document.getElementById('links').value});
+			});
+		});
+	</script>
+</head>
+<body onload="this.focus()">
+
+<h1></h1>
+
+<div id="text1"></div>
+<div id="text2"></div>
+
+<img src="load.gif" id="loader">
+	<textarea id="links" style="font-size:12; width:500"></textarea>
+	<input id="copy" type="button" value=""/>
+	<div id="anchorlinks" style="font-size:12"></div>
+</body>	
+	
+</html>
