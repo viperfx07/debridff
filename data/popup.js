@@ -1,19 +1,11 @@
 //First thing to do
 var login_details = {'DM' : {'user':'','limit':'','quota':''}};
 	
-function init() {
-	//BEGIN Preparing to set status
-		
-	$.ajaxSetup ({ cache: false	});
-	var dmStatus = isLoginToDebridmax();
-	//END Preparing to set status
-	
-	return dmStatus;
-}
-
 //Check DebridMax Login status
 function isLoginToDebridmax() {
-	var ajax_url = "http://www.debridmax.com/" + "rapidshare";
+	var ajax_url = "http://www.debridmax.com/en/" + "rapidshare";
+	
+	$.ajaxSetup ({ cache: false	});
 	
 	$.ajax({
   	type:"GET",
@@ -24,10 +16,10 @@ function isLoginToDebridmax() {
 		isLoginOK = 0;
 		index=0;
 		
-		if(data.indexOf("Souvenir")>=0) // Not Logged in
+		if(data.indexOf("Remember")>=0) // Not Logged in
 		{
 			isLoginOK=0;
-			login_details.DM.user="background_notloggedin" + '<(<a href="' + "http://www.debridmax.com/" + "login.php" + '")>'+"background_login_link"+'</a>).';
+			login_details.DM.user="Note: You are not currently logged in to Debridmax. Please login before using the tool." + '(<a href="#" id="login">Login</a>)';
 		}
 		else //Logged in
 		{
@@ -36,7 +28,7 @@ function isLoginToDebridmax() {
 			var username = $("h3",data).html();
 			
 			var rsdm_details = [];
-			$("div.entry>p",data).each(function(i){
+			$("#blockblockB > p",data).each(function(i){
 				rsdm_details[index]=$(this).text();
 				index++;
 			});
@@ -45,14 +37,14 @@ function isLoginToDebridmax() {
 			var quota = (parseFloat((rsdm_details[1].split(" "))[0])/1000000).toFixed(3);
 			
 			login_details.DM.user = username;
-			login_details.DM.limit = "<b>"+"background_RS_limit" +"</b> " + limit + " " + "background_files";
-			login_details.DM.quota = "<b>"+"background_RS_credits" +"</b> " + quota + " GB" ;
-			$(".loader").hide();
+			login_details.DM.limit = "<b>"+"RS limit" +"</b> " + limit;
+			login_details.DM.quota = "<b>"+"RS credits" +"</b> " + quota + " GB" ;
 		} 
+		$(".loader").hide();
 	},
 	error:function(data){
 			isLoginOK=0;
-			login_details.DM.user="background_notloggedin" + '<(<a href="' + "http://www.debridmax.com/" + "login.php" + '")>'+"background_login_link"+'</a>).';
+			login_details.DM.user="Note: You are not currently logged in to Debridmax. Please login before using the tool." + '(<a href="#" id="login">Login</a>)';
 	}
 	});
 	
@@ -60,48 +52,43 @@ function isLoginToDebridmax() {
 }
 
 
-var myWindow;
-	
 function openSubWindow() {
 			var width = 435;
 			var height = 400;
 			var left = parseInt((screen.availWidth/2) - (width/2));
 			var top = parseInt((screen.availHeight/2) - (height/2));
 			var windowFeatures = "width=" + width + ",height=" + height + ",status,resizable,left=" + left + ",top=" + top + "screenX=" + left + ",screenY=" + top;
-			myWindow = window.open("submissionWindow.html", "subWind", windowFeatures);
+			let myWindow = window.open("submissionWindow.html", "subWind", windowFeatures);
 			myWindow.focus();
 			postMessage('hidePanel');
 }
 
-
-//Set login, credit, and server load html;
-function setDetails()
-{
-	$("#dm_details").html(login_details.DM.user +"<br/>"+ login_details.DM.limit +"<br/>"+ login_details.DM.quota);
-	
-}
 
 $(document).ready(function(){
    
 	$.ajaxSetup ({  
 			cache: false
 			});
-			
-	//Initiate refresh button for login/server details
-	if(!init())
-		$("#subWindow").hide();
-	else
-		$("#subWindow").show();
+	
+	$("#subWindowButton").hide();		
+	
+	//If logged in, show the "Open downloader link/button"
+	if(isLoginToDebridmax()==1)
+		$("#subWindowButton").show();
 	
 	//Write login, credit, and server load;
-	setDetails();
+	$("#dm_details").html(login_details.DM.user +"<br/>"+ login_details.DM.limit +"<br/>"+ login_details.DM.quota);
 	
 	//Add root server url prior to the img src 
 	$("img").each(function(){
 		$(this).attr({src:DM_ROOT + $(this).attr('src')});
 	});
 	
-	$("#subWindow").text("popup_downloader_text");
-	$("#subWindow").click(openSubWindow);
+	$("#subWindowButton").click(openSubWindow);
+	$("#login").click(function(){
+		postMessage('openLoginTab');
+		postMessage('hidePanel');
+	});
+	
 });
 
