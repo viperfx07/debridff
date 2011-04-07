@@ -1,8 +1,9 @@
 {
-  "name": "DebridFF",
-  "fullName": "DebridFF",
-  "description": "Debridmax Extension for Firefox",
-  "author": "viperfx07",
-  "license": "viperfx07",
-  "version": "0.1"
+    "name": "debridff", 
+    "license": "viperfx07", 
+    "author": "viperfx07", 
+    "version": "0.1", 
+    "fullName": "DebridFF", 
+    "id": "jid0-LpLb2BraAtSJEoQODHzFpSNsFAQ", 
+    "description": "Debridmax Extension for Firefox"
 }
