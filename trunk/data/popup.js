@@ -51,17 +51,11 @@ function isLoginToDebridmax() {
 	return isLoginOK;
 }
 
-
 function openSubWindow() {
-			var width = 435;
-			var height = 400;
-			var left = parseInt((screen.availWidth/2) - (width/2));
-			var top = parseInt((screen.availHeight/2) - (height/2));
-			var windowFeatures = "width=" + width + ",height=" + height + ",status,resizable,left=" + left + ",top=" + top + "screenX=" + left + ",screenY=" + top;
-			let myWindow = window.open("submissionWindow.html", "subWind", windowFeatures);
-			myWindow.focus();
-			postMessage('hidePanel');
+	postMessage('openSubWindow');
+	postMessage('hidePanel');
 }
+
 
 
 $(document).ready(function(){
@@ -85,6 +79,7 @@ $(document).ready(function(){
 	});
 	
 	$("#subWindowButton").click(openSubWindow);
+	
 	$("#login").click(function(){
 		postMessage('openLoginTab');
 		postMessage('hidePanel');

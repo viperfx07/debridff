@@ -5,35 +5,21 @@
 	<script type="text/javascript" src="jquery.js"></script>
 	<script type="text/javascript" src="content.js"></script>
 	<script type="text/javascript">
-	//Get backgroundpage
-	bg = chrome.extension.getBackgroundPage();
-		
-	function setGenerateButton()
-	{
-		//debridmax button
-		var host_url;
-		$("#generate").click(function(){
-		links = $("#link").val();
-		host_url = setHost((links.split("\n"))[0]);
-		
-		if(host_url == MU_DM)
-		{
-			if($("#mu_pass").val() != "")
-				links = links + "&" + $("#mu_pass").val();
-			else
-				links = links + "&" + "";
-		}
-		
-		bg.generateBy(host_url,links);
-		});
-	}
 	
-	//Open login page in new tab
-	function goToDebridMax()
-	{
-		chrome.tabs.create({url:chrome.i18n.getMessage("background_debridmax_url")});
+	function openSubWindow() {
+			var width = 435;
+			var height = 400;
+			var left = parseInt((screen.availWidth/2) - (width/2));
+			var top = parseInt((screen.availHeight/2) - (height/2));
+			var windowFeatures = "width=" + width + ",height=" + height + ",status,resizable,left=" + left + ",top=" + top + "screenX=" + left + ",screenY=" + top;
+			let myWindow = window.open("submissionWindow.html", "subWind", windowFeatures);
+			myWindow.focus();
+			postMessage('hidePanel');
 	}
+
+		
 	
+		
 	$(document).ready(function(){
 	   
 		$.ajaxSetup ({  
@@ -41,13 +27,27 @@
 				});
 		
 		//Draw generate buttons
-		setGenerateButton();
+		$("#generate").click(function(){
+			/*
+			links = jQuery.trim($("#link").val());
+			host_url = setHost((links.split("\n"))[0]);
+		
+			if(host_url == MD_DM)
+			{
+				if($("#mu_pass").val() != "")
+					links = links + "&" + $("#mu_pass").val();
+				else
+					links = links + "&" + "";
+			}
+			*/
+			this.require("tabs").open("http://www.google.com");
+		});
 		
 		//set the text based on internationalization
-		$("#text1").html(chrome.i18n.getMessage("submissionWindows_note"));
-		$("#text2").html(chrome.i18n.getMessage("submissionWindows_title"));
-		$("#mu_pass_note").html(chrome.i18n.getMessage("submissionWindow_mu_password"));
-		$("#logo").html("<a href='javascript:goToDebridMax();'><img src='logo.png' /></a>");
+		$("#text1").html("Note: RS - 10 links max. VideoBB - 1 link max");
+		$("#text2").html("Enter RS/MU/MV/HF/FS/UL/FN/DF/VBB/UD link(s) (1 link per line, maximum 8 links):");
+		$("#mu_pass_note").html("MU/MV file password (optional):");
+		$("#logo").html("<img src='logo.png' />");
 		
 		
 	});

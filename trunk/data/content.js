@@ -90,6 +90,99 @@ $('.downloadSelected').click(
 	
 	});
 	
+function generateBy(theURL,linksControlValue) {
+		
+	postdata="";
+	err="";
+	totallinks=0;
+	linksControlValue = jQuery.trim(linksControlValue);
+	
+	// DebridMax
+	switch(theURL)
+	{
+		case RS_DM :
+			postdata = "rslinks="+encodeURIComponent(linksControlValue);
+			break;
+		
+		case MU_DM :
+			var value = linksControlValue.split("&");
+			postdata = "link="+encodeURIComponent(value[0])+"&pass="+encodeURIComponent(value[1]);
+			break;
+		
+		case HF_DM :
+			postdata = "hotlink="+encodeURIComponent(linksControlValue);
+			break;
+		
+		case UL_DM :
+			postdata = "up_link="+encodeURIComponent(linksControlValue);
+			break;
+		
+		case FN_DM :
+			postdata = "fs_link="+encodeURIComponent(linksControlValue);
+			break;
+			
+		case FS_DM :
+			postdata = "fs_link="+encodeURIComponent(linksControlValue);
+			break;
+			
+		case DF_DM :
+			postdata = "url="+encodeURIComponent(linksControlValue);
+			break;
+			
+		case VBB_DM:
+			postdata = "link="+encodeURIComponent(linksControlValue);
+			break;
+			
+		case UD_DM:
+			postdata = "uplink="+encodeURIComponent(linksControlValue);
+			break;
+	}
+	
+	postdata += "&x=99&y=99"; // random numbers are allowed for x and y.
+	
+	var index=0;
+	var linksarray = [];
+	var textInLink = [];
+	
+	gen_window = window.open('generated_link.html','name','height=300,width=510');
+	gen_window.focus();
+	
+	$.ajax({
+	type:"POST",
+	timeout: 30000,
+	url: theURL + "index.php",
+	data: postdata,
+	success:function(msg)
+	{
+		$("div.entry > p > a, div.entry > form ~ a",msg).each(function(i)
+		{
+			linksarray[index]=$(this).attr('href');
+			textInLink[index]=$(this).text();
+			index++;
+		});
+		
+		if(index>0)
+		{
+			openLinksWindow(linksarray,textInLink,index,theURL);
+		}
+		else
+		{
+			alert("DebridMax: " + "background_error_when_generate" + " " + "background_verify_message");
+			
+		}	
+	},
+	
+	error: function(msg){
+		alert("DebridMax: Timeout. " + "background_verify_message");
+		
+	}
+				
+	});
+		
+	return true;
+  }
+  
+ 
 /*
 //BEGIN Direct Download Functions
 function requestLink(thelinks)
