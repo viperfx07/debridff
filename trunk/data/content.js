@@ -1,13 +1,7 @@
 ﻿//DebridMax
 const DM_ROOT = 'http://www.debridmax.com/';
-const HF_DM = 'http://www.debridmax.com/hotfile/';
-const MU_DM = 'http://www.debridmax.com/mega/';
-const FS_DM = 'http://www.debridmax.com/fileserve/';
-const FN_DM = 'http://s02.debridmax.com/filesonic/';
-const UL_DM = 'http://www.debridmax.com/uploading/';
+const MD_DM = 'http://www.debridmax.com/multimax/';
 const RS_DM = 'http://www.debridmax.com/rapidshare/';
-const DF_DM = 'http://www.debridmax.com/depositfiles/';
-const UD_DM = 'http://www.debridmax.com/uploaded/';
 const VBB_DM = 'http://www.debridmax.com/videobb/';
 
 //Draw buttons near the code tag
@@ -39,21 +33,21 @@ function setHost(theString)
 	if (theString.indexOf("rapidshare")>=0)
 		host=RS_DM;
 	else if (theString.indexOf("megaupload")>=0)
-		host=MU_DM;
+		host=MD_DM;
 	else if (theString.indexOf("megavideo")>=0)
-		host=MU_DM;
+		host=MD_DM;
 	else if (theString.indexOf("hotfile")>=0)
-		host=HF_DM;
+		host=MD_DM;
 	else if (theString.indexOf("uploading")>=0)
-		host=UL_DM;
+		host=MD_DM;
 	else if (theString.indexOf("fileserve")>=0)
-		host=FS_DM;
+		host=MD_DM;
 	else if (theString.indexOf("filesonic")>=0)
-		host=FN_DM;
+		host=MD_DM;
 	else if (theString.indexOf("depositfile")>=0)
-		host=DF_DM;
+		host=MD_DM;
 	else if (theString.indexOf("uploaded")>=0)
-		host=UD_DM;
+		host=MD_DM;
 	else if (theString.indexOf("videobb")>=0)
 		host=VBB_DM;
 	else
@@ -62,15 +56,9 @@ function setHost(theString)
 	return host;
 }
 
-//for phpBB's code tag users: warez-bb.org
-$("td.code").each(function() {
-		setButtons($(this));
-});
-
-//for vBulletin's code tag users: katzforums.com, tehparadox.com
-$("pre").each(
-		function() {
-		setButtons($(this));
+//Draw Download and Download All for tag that contains download links.
+$("td.code, pre, blockquote").each(function() {
+	setButtons($(this));
 });
 
 //"Download Selected" button on page
@@ -90,6 +78,7 @@ $('.downloadSelected').click(
 	
 	});
 	
+//Generate premium download links
 function generateBy(theURL,linksControlValue) {
 		
 	postdata="";
@@ -97,43 +86,20 @@ function generateBy(theURL,linksControlValue) {
 	totallinks=0;
 	linksControlValue = jQuery.trim(linksControlValue);
 	
+	// DebridMax
 	switch(theURL)
 	{
 		case RS_DM :
 			postdata = "rslinks="+encodeURIComponent(linksControlValue);
 			break;
 		
-		case MU_DM :
+		case MD_DM :
 			var value = linksControlValue.split("&");
-			postdata = "link="+encodeURIComponent(value[0])+"&pass="+encodeURIComponent(value[1]);
+			postdata = "hotlink="+encodeURIComponent(value[0])+"&pass="+encodeURIComponent(value[1]);
 			break;
 		
-		case HF_DM :
-			postdata = "hotlink="+encodeURIComponent(linksControlValue);
-			break;
-		
-		case UL_DM :
-			postdata = "up_link="+encodeURIComponent(linksControlValue);
-			break;
-		
-		case FN_DM :
-			postdata = "fs_link="+encodeURIComponent(linksControlValue);
-			break;
-			
-		case FS_DM :
-			postdata = "fs_link="+encodeURIComponent(linksControlValue);
-			break;
-			
-		case DF_DM :
-			postdata = "url="+encodeURIComponent(linksControlValue);
-			break;
-			
 		case VBB_DM:
 			postdata = "link="+encodeURIComponent(linksControlValue);
-			break;
-			
-		case UD_DM:
-			postdata = "uplink="+encodeURIComponent(linksControlValue);
 			break;
 	}
 	
@@ -142,38 +108,48 @@ function generateBy(theURL,linksControlValue) {
 	var index=0;
 	var linksarray = [];
 	var textInLink = [];
-	
-	gen_window = window.open('generated_link.html','name','height=300,width=510');
-	gen_window.focus();
+	var objJSON;
+	var strJSON
 	
 	$.ajax({
 	type:"POST",
-	timeout: 30000,
+	timeout: 100000,
 	url: theURL + "index.php",
 	data: postdata,
 	success:function(msg)
 	{
-		$("div.entry > p > a, div.entry > form ~ a",msg).each(function(i)
+		$("div.entry > p > a, div#debridmax > a",msg).each(function(i)
 		{
 			linksarray[index]=$(this).attr('href');
 			textInLink[index]=$(this).text();
 			index++;
+			
 		});
 		
 		if(index>0)
 		{
-			openLinksWindow(linksarray,textInLink,index,theURL);
+			objJSON = {
+				"linksarray" : linksarray,
+				"textInLink" : textInLink,
+				"index" : index,
+				"theURL" : theURL
+			};
+			
+			strJSON = JSON.stringify(objJSON);
+			
 		}
 		else
 		{
-			alert("DebridMax: " + "background_error_when_generate" + " " + "background_verify_message");
-			
+			alert("DebridMax: " + "Error when generate" + " " + "background_verify_message");
 		}	
 	},
 	
 	error: function(msg){
 		alert("DebridMax: Timeout. " + "background_verify_message");
-		
+	},
+	
+	complete: function(msg){
+		postMessage(strJSON);
 	}
 	});
 		
@@ -181,26 +157,51 @@ function generateBy(theURL,linksControlValue) {
   }
   
  
- 
-//This file works as background.js for submissionWindow.html
+//BEGIN Background codes for submissionWindow.html
+
 //Event for debridff-generate button
-$("#generate").click(function(){
+$("#debridff-generate").click(function(){
 	
-	links = jQuery.trim($("#link").val());
+	postMessage("test");
+	links = jQuery.trim($("#debridff-link").val());
 	host_url = setHost((links.split("\n"))[0]);
-	alert(host_url);
 	if(host_url == MD_DM)
 	{
-		if($("#mu_pass").val() != "")
-			links = links + "&" + $("#mu_pass").val();
+		if($("#debridff-mu_pass").val() != "")
+			links = links + "&" + $("#debridff-mu_pass").val();
 		else
 			links = links + "&" + "";
 	}
-	//generateBy(host_url,links);
+	generateBy(host_url,links);
 }); 
  
- 
- 
+//END Background codes for submissionWindow.html
+
+//BEGIN Background codes for generated_link.html
+function setLinks(linksarray,textInLink,totallinks,theURL)
+{
+	var links="";
+	var anchorlinks="";
+	var startIndex = 0;
+	var endIndex;
+	
+	endIndex = startIndex + totallinks - 1
+			
+	for(i=startIndex;i<=endIndex;i++)
+	{
+		links+=linksarray[i]+"\r\n";
+		anchorlinks += chrome.i18n.getMessage("generatedlink_link") + (i+1) + ': <a href='+linksarray[i]+'>'+textInLink[i]+'</a><br/>';
+	}
+	
+	document.getElementById('links').value += links;
+	$("#anchorlinks").append(anchorlinks);
+	$("#loader").hide();
+	$("#links").attr('rows',totallinks*2)
+}
+
+//END
+
+
 /*
 //BEGIN Direct Download Functions
 function requestLink(thelinks)

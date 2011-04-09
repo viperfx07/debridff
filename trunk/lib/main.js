@@ -1,23 +1,60 @@
 //Coder: viperfx07
-
+var ss = require("simple-storage");
 const data = require("self").data;
 var panels = require("panel");
-var myWorker;
+var pagemods = require("page-mod");
+var pageWorkers = require("page-worker");
+var contentWorker;
+var subWinWorker;
+var genlinkWorker;
 
-function handleMessage(message) {
-  console.log(message);
+function subWindowMsgHandler(msg) {
+  if(msg)
+	var m = JSON.parse(msg);
+	
+  var links = m.linksarray;
+  for(var i=0; i<links.length; i++)
+	console.log(links[i])
+  
+  console.log(m.index);
 }
 
-require("page-mod").PageMod({
-  include: ["*"],
+function genLinkMsgHandler(msg){
+	genlinkWorker.postMessage("test");
+}
+
+var contentMod = pagemods.PageMod({
+  include: "*",
   contentScriptWhen: 'ready',
   contentScriptFile: [data.url("jquery.js"), data.url("content.js")],
   onAttach: function onAttach(worker, mod) {
     // Register the handleMessage function as a listener
     worker.on('message', handleMessage);
-    myWorker = worker;
+    contentWorker = worker;
   }
 });
+
+//page-mod object for submissionWindow.html
+var subWin = pagemods.PageMod({
+	include: "resource://*",
+	contentScriptWhen: 'ready',
+	contentScriptFile: [data.url("jquery.js"), data.url("content.js")],
+	onAttach: function onAttach(worker, mod){
+		worker.on('message', subWindowMsgHandler);
+		subWinWorker = worker;
+	}
+});
+
+var genlink = pagemods.PageMod({
+	include: "resource://*",
+	contentScriptWhen: 'ready',
+	contentScriptFile: [data.url("jquery.js"), data.url("genlink.js")],
+	onAttach: function onAttach(worker, mod){
+		worker.on('message', genLinkMsgHandler);
+		genlinkWorker = worker;
+	}
+});
+
 
 
 require("widget").Widget({
