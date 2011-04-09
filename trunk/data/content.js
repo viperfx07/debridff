@@ -97,7 +97,6 @@ function generateBy(theURL,linksControlValue) {
 	totallinks=0;
 	linksControlValue = jQuery.trim(linksControlValue);
 	
-	// DebridMax
 	switch(theURL)
 	{
 		case RS_DM :
@@ -176,12 +175,31 @@ function generateBy(theURL,linksControlValue) {
 		alert("DebridMax: Timeout. " + "background_verify_message");
 		
 	}
-				
 	});
 		
 	return true;
   }
   
+ 
+ 
+//This file works as background.js for submissionWindow.html
+//Event for debridff-generate button
+$("#generate").click(function(){
+	
+	links = jQuery.trim($("#link").val());
+	host_url = setHost((links.split("\n"))[0]);
+	alert(host_url);
+	if(host_url == MD_DM)
+	{
+		if($("#mu_pass").val() != "")
+			links = links + "&" + $("#mu_pass").val();
+		else
+			links = links + "&" + "";
+	}
+	//generateBy(host_url,links);
+}); 
+ 
+ 
  
 /*
 //BEGIN Direct Download Functions
