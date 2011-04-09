@@ -2,58 +2,6 @@
             "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<script type="text/javascript" src="jquery.js"></script>
-	<script type="text/javascript" src="content.js"></script>
-	<script type="text/javascript">
-	
-	function openSubWindow() {
-			var width = 435;
-			var height = 400;
-			var left = parseInt((screen.availWidth/2) - (width/2));
-			var top = parseInt((screen.availHeight/2) - (height/2));
-			var windowFeatures = "width=" + width + ",height=" + height + ",status,resizable,left=" + left + ",top=" + top + "screenX=" + left + ",screenY=" + top;
-			let myWindow = window.open("submissionWindow.html", "subWind", windowFeatures);
-			myWindow.focus();
-			postMessage('hidePanel');
-	}
-
-		
-	
-		
-	$(document).ready(function(){
-	   
-		$.ajaxSetup ({  
-				cache: false
-				});
-		
-		//Draw generate buttons
-		$("#generate").click(function(){
-			/*
-			links = jQuery.trim($("#link").val());
-			host_url = setHost((links.split("\n"))[0]);
-		
-			if(host_url == MD_DM)
-			{
-				if($("#mu_pass").val() != "")
-					links = links + "&" + $("#mu_pass").val();
-				else
-					links = links + "&" + "";
-			}
-			*/
-			this.require("tabs").open("http://www.google.com");
-		});
-		
-		//set the text based on internationalization
-		$("#text1").html("Note: RS - 10 links max. VideoBB - 1 link max");
-		$("#text2").html("Enter RS/MU/MV/HF/FS/UL/FN/DF/VBB/UD link(s) (1 link per line, maximum 8 links):");
-		$("#mu_pass_note").html("MU/MV file password (optional):");
-		$("#logo").html("<img src='logo.png' />");
-		
-		
-	});
-	
-	</script>
-
 	<style type="text/css">
 	body {
 		background: #000000;
@@ -71,16 +19,16 @@
 </head>
 
 <body>
-	<div id="logo"></div>
+	<div id="logo"><img src='logo.png' /></div>
 	<div class="container">
-		<div id="text1"></div>
-		<span id="text2"></span>
+		<div id="text1">Note: RS - 10 links max. VideoBB - 1 link max</div>
+		<span id="text2">Enter RS/MU/MV/HF/FS/UL/FN/DF/VBB/UD link(s) (1 link per line, maximum 8 links):</span>
 		<textarea id="link" cols="48" rows="10"></textarea>
 		<br />
-		<span id="mu_pass_note"></span><input id="mu_pass" type="text" name="mu_pass" />
+		<span id="mu_pass_note">MU/MV file password (optional):</span>
+		<input id="mu_pass" type="text" name="mu_pass" />
 		<br />
 		<center><input type="button" id="generate" value="GO"/></center>
 	</div>
-	
 </body>
 </html>

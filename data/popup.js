@@ -1,6 +1,6 @@
 //First thing to do
 var login_details = {'DM' : {'user':'','limit':'','quota':''}};
-	
+
 //Check DebridMax Login status
 function isLoginToDebridmax() {
 	var ajax_url = "http://www.debridmax.com/en/" + "rapidshare";
@@ -52,7 +52,12 @@ function isLoginToDebridmax() {
 }
 
 function openSubWindow() {
-	postMessage('openSubWindow');
+	var width = 435;
+	var height = 400;
+	var left = parseInt((screen.availWidth/2) - (width/2));
+	var top = parseInt((screen.availHeight/2) - (height/2));
+	var windowFeatures = "width=" + width + ",height=" + height + ",status,resizable,left=" + left + ",top=" + top + "screenX=" + left + ",screenY=" + top;
+	myWindow = window.open("submissionWindow.html", "subWind", windowFeatures);
 	postMessage('hidePanel');
 }
 
