@@ -65,9 +65,10 @@ function generateBy(theURL,linksControlValue) {
 		},	
 		error: function(msg){
 			alert("DebridMax: Timeout. " + "background_verify_message");
-		}
+		},
+		
+		complete: function(){ $("img#debridff-sw-loader").hide();}
 	});
-	
-	$("img#debridff-sw-loader").hide();	
+		
 	return true;
 }
