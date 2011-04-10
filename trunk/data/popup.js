@@ -40,14 +40,14 @@ function isLoginToDebridmax() {
 			login_details.DM.limit = "<b>"+"RS limit" +"</b> " + limit;
 			login_details.DM.quota = "<b>"+"RS credits" +"</b> " + quota + " GB" ;
 		} 
-		$(".loader").hide();
+		
 	},
 	error:function(data){
 			isLoginOK=0;
 			login_details.DM.user="Note: You are not currently logged in to Debridmax. Please login before using the tool." + '(<a href="#" id="login">Login</a>)';
 	}
 	});
-	
+	$(".loader").hide();
 	return isLoginOK;
 }
 
