@@ -10,6 +10,7 @@ $("#debridff-generate").click(function(){
 		else
 			links = links + "&" + "";
 	}
+	generateBy(host_url,links);
 });
 
 $(document).ready(function(){
