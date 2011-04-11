@@ -1,7 +1,9 @@
+var links="";
+
 onMessage = function onMessage(msg)
 {
 	//Temporary variables
-	let links="";
+	
 	let anchorlinks="";
 	let startIndex = 0;
 	let endIndex;
@@ -16,7 +18,10 @@ onMessage = function onMessage(msg)
 			
 	for(i=startIndex;i<=endIndex;i++)
 	{
-		links+=linksarray[i]+"\r\n";
+		if(i==endIndex)
+			links+=linksarray[i];
+		else
+			links+=linksarray[i]+"\r\n";
 		anchorlinks += "Link " + (i+1) + ': <a href='+linksarray[i]+'>'+textInLink[i]+'</a><br/>';
 	}
 	
@@ -27,6 +32,16 @@ onMessage = function onMessage(msg)
 }
 
 $(document).ready(function(){
-	postMessage("ready");
+	let message = {'type' : '', 'content' : ''};
+	message.type='ready';
+	message.content='ready';
+	postMessage(JSON.stringify(message));
+		
 	$("#loader").show();
+	
+	$("#copy").click(function(){
+		message.type='copy';
+		message.content = links;
+		postMessage(JSON.stringify(message));
+	});
 });
