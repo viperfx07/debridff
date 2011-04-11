@@ -1,6 +1,15 @@
+var loaderGIF;
+onMessage= function onMessage(msg)
+{	
+	loaderGIF = msg;
+}
+
+
 //Draw buttons near the code tag
 function setButtons(theControl)
 {
+	postMessage("getLoaderImgSrc");
+	console.log(loaderGIF);
 	if(theControl.html().indexOf('rapidshare')>=0 ||
 			theControl.html().indexOf('megaupload')>=0 ||
 			theControl.html().indexOf('hotfile')>=0 ||
@@ -11,11 +20,13 @@ function setButtons(theControl)
 			theControl.html().indexOf('videobb')>=0 ||
 			theControl.html().indexOf('uploaded')>=0
 		)
-			
+		
 		theControl.before(
 				"<input type='button' class='downloadAll' value='" + "Download All" + "' />"+
-				"<input type='button' class='downloadSelected' value='" + "Download Selected" + "' />"
+				"<input type='button' class='downloadSelected' value='" + "Download Selected" + "' />"+
+				"<img id='debridff-loader-on-page' src='" + loaderGIF + "' />"
 		);
+		$("#debridff-loader-on-page").hide();
 }
 
 //Draw Download and Download All for tag that contains download links.
@@ -26,19 +37,20 @@ $("td.code, pre, blockquote").each(function() {
 //"Download Selected" button on page
 $('.downloadSelected').click(
 	function(){
-			
-		var leecher = $(this).attr('id');
-		var selectedText = window.getSelection().toString();
+		$("#debridff-loader-on-page").show();	
+		let selectedText = window.getSelection().toString();
 		if(selectedText == "")
-		{
 			alert("Select the link first");
-		}
 		else
 		{
-			postMessage(selectedText);
+			if(isLoginToDebridmax() == 1){
+				let thehost = setHost(selectedText);
+				generateBy(thehost,selectedText);
+			}	
+			else
+				alert("background_notloggedin");
 		}
-	
-	});
+});
 	
 
 /*	
@@ -84,34 +96,20 @@ chrome.extension.sendRequest({requestType:"getAutoGenVal"}, function(response){
 
 
 //END Direct Download Functions
+*/
 
 //"Download" button on page
 $('.downloadAll').click(
 	function(){
-		unparsedlinks = "";
-		var s = $(this).next().next().html();//get the text next to the button
-		
-		//BEGIN Google Dict div element removal
-		var dom = document.createElement('span');
-		dom.innerHTML = s;
-		var children = dom.childNodes;
-		for(var i = 0; i<children.length; i++)
-		{
-			if(children[i].nodeType!=1)
-				unparsedlinks += children[i].data;
-		}
-		//END
-		
-		parsedlinks = unparsedlinks.split("\n\n");
-		
-		thelinks = jQuery.trim(parsedlinks.join("\n"));
-		
-		var thehost = setHost(thelinks);
-		if(thehost.length>0)
-		{	
-			chrome.extension.sendRequest({requestType:"dl", the_links:thelinks, the_host:thehost});
-		}
+		$("#debridff-loader-on-page").show();
+		let unparsedlinks = jQuery.trim($(this).next().next().text());//get the text next to the button
+		let parsedlinks = unparsedlinks.split("\n\n");
+		let thelinks = jQuery.trim(parsedlinks.join("\n"));
+		let thehost = setHost(thelinks);
+		if(isLoginToDebridmax() == 1){
+			let thehost = setHost(thelinks);
+			generateBy(thehost,thelinks);
+		}	
 		else
-			alert(chrome.i18n.getMessage("content_supported_hosts"));
+			alert("background_notloggedin");
 	});
-*/

@@ -1,3 +1,8 @@
+onMessage= function onMessage(msg)
+{	
+	init();
+}
+
 //First thing to do
 var login_details = {'DM' : {'user':'','limit':'','quota':''}};
 
@@ -61,15 +66,12 @@ function openSubWindow() {
 	postMessage('hidePanel');
 }
 
-
-
-$(document).ready(function(){
-   
-	$.ajaxSetup ({  
-			cache: false
-			});
-	
-	$("#subWindowButton").hide();		
+function init()
+{
+	$(".loader").show();
+	$("#dm_details").hide();
+	$("#subWindowButton").hide();
+	login_details.DM.user = login_details.DM.limit = login_details.DM.quota = "";
 	
 	//If logged in, show the "Open downloader link/button"
 	if(isLoginToDebridmax()==1)
@@ -77,6 +79,7 @@ $(document).ready(function(){
 	
 	//Write login, credit, and server load;
 	$("#dm_details").html(login_details.DM.user +"<br/>"+ login_details.DM.limit +"<br/>"+ login_details.DM.quota);
+	$("#dm_details").show();
 	
 	//Add root server url prior to the img src 
 	$("img").each(function(){
@@ -89,6 +92,4 @@ $(document).ready(function(){
 		postMessage('openLoginTab');
 		postMessage('hidePanel');
 	});
-	
-});
-
+}

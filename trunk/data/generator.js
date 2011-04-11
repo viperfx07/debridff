@@ -31,7 +31,7 @@ function generateBy(theURL,linksControlValue) {
 	
 	$.ajax({
 		type:"POST",
-		timeout: 100000,
+		timeout: 100000, //100 seconds
 		url: theURL + "index.php",
 		data: postdata,
 		success:function(msg)
@@ -54,7 +54,7 @@ function generateBy(theURL,linksControlValue) {
 				};
 				
 				let strJSON = JSON.stringify(objJSON);
-				window.open('generated_link.html','name','height=300,width=510');
+				window.open(generatedLinkWin,'name','height=300,width=510');
 				postMessage(strJSON);
 			}
 			else
@@ -67,7 +67,11 @@ function generateBy(theURL,linksControlValue) {
 			alert("DebridMax: Timeout. " + "background_verify_message");
 		},
 		
-		complete: function(){ $("img#debridff-sw-loader").hide();}
+		complete: function(){ 
+			$("img#debridff-sw-loader").hide();
+			$("#debridff-loader-on-page").hide();
+		}
+			
 	});
 		
 	return true;

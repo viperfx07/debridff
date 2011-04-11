@@ -12,11 +12,21 @@ function subWindowMsgHandler(msg) {
 } 
 
 function genLinkMsgHandler(msg){
-	genLinkWorker.postMessage(ss.storage.parsedJSONfromSubWin);
+	var m = JSON.parse(msg);
+	
+	if(m.type=="ready")
+		genLinkWorker.postMessage(ss.storage.parsedJSONfromSubWin);
+	else
+		require("clipboard").set(m.content);
 }
 
 function contentMsgHandler(msg){
-	contentWorker.postMessage("test");
+	if(msg=="getLoaderImgSrc")
+	{
+		contentWorker.postMessage(data.url("load.gif"));
+	}
+	else
+		ss.storage.parsedJSONfromSubWin = JSON.parse(msg);
 }
 
 //Page-mod object for submissionWindow.html
@@ -24,6 +34,7 @@ pagemods.PageMod({
 	include: data.url("submissionWindow.html"),
 	contentScriptWhen: 'ready',
 	contentScriptFile: [data.url("jquery.js"), data.url("generator.js"), data.url("hostSetter.js"), data.url("subWin.js")],
+	contentScript: 'var generatedLinkWin="' + data.url("generated_link.html") + '";',
 	onAttach: function onAttach(worker, mod){
 		worker.on('message', subWindowMsgHandler);
 		subWinWorker = worker;
@@ -46,8 +57,8 @@ pagemods.PageMod({
   include: "*",
   contentScriptWhen: 'ready',
   contentScriptFile: [data.url("jquery.js"), data.url("generator.js"), data.url("hostSetter.js"),data.url("pageModder.js")],
+  contentScript: 'var generatedLinkWin="' + data.url("generated_link.html") + '";',
   onAttach: function onAttach(worker, mod) {
-    // Register the handleMessage function as a listener
     worker.on('message', contentMsgHandler);
     contentWorker = worker;
   }
@@ -57,13 +68,12 @@ require("widget").Widget({
 	id: "debrid_widget",
 	label: "DebridMax",
 	contentURL: data.url("icon19.png"),
-	onClick: function() { 
-		require("panel").Panel({
+	panel: panels.Panel({
 		height: 150,
 		width : 250,
 		contentURL: data.url("popup.html"),
-		contentScriptWhen: "ready",
 		contentScriptFile: [data.url("jquery.js"),data.url("popup.js"),data.url("hostSetter.js")],
+		onShow: function(){this.postMessage("load the init method");},
 		onMessage: function(m){
 			switch (m)
 			{
@@ -77,8 +87,7 @@ require("widget").Widget({
 					return;
 			}
 		}
-		}).show();
-	}
+	})
 });
 
 
