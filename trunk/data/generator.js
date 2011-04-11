@@ -69,7 +69,7 @@ function generateBy(theURL,linksControlValue) {
 		
 		complete: function(){ 
 			$("img#debridff-sw-loader").hide();
-			$("#debridff-loader-on-page").hide();
+			postMessage("finish_loading");
 		}
 			
 	});

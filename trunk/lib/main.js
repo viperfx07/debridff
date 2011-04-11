@@ -7,8 +7,21 @@ var panels = require("panel");
 //Declaring workers
 var contentWorker, subWinWorker, genLinkWorker;
 
+
+
+function showLoaderIconOnWidget(){
+	debridWidget.contentURL = data.url("load.gif");
+}
+
+function showDefaultIconOnWidget(){
+	debridWidget.contentURL = data.url("icon19.png");
+}
+
 function subWindowMsgHandler(msg) {
-	ss.storage.parsedJSONfromSubWin = JSON.parse(msg);
+	if(msg=="finish_loading")
+		showDefaultIconOnWidget();
+	else
+		ss.storage.parsedJSONfromSubWin = JSON.parse(msg);
 } 
 
 function genLinkMsgHandler(msg){
@@ -21,10 +34,10 @@ function genLinkMsgHandler(msg){
 }
 
 function contentMsgHandler(msg){
-	if(msg=="getLoaderImgSrc")
-	{
-		contentWorker.postMessage(data.url("load.gif"));
-	}
+	if(msg=="loading")
+		showLoaderIconOnWidget();
+	else if(msg=="finish_loading")
+		showDefaultIconOnWidget();
 	else
 		ss.storage.parsedJSONfromSubWin = JSON.parse(msg);
 }
@@ -56,7 +69,8 @@ pagemods.PageMod({
 pagemods.PageMod({
   include: "*",
   contentScriptWhen: 'ready',
-  contentScriptFile: [data.url("jquery.js"), data.url("generator.js"), data.url("hostSetter.js"),data.url("pageModder.js")],
+  contentScriptFile: [data.url("jquery.js"), data.url("generator.js"), data.url("hostSetter.js"),
+					 data.url("pageModder.js"),data.url("loginChecker.js")],
   contentScript: 'var generatedLinkWin="' + data.url("generated_link.html") + '";',
   onAttach: function onAttach(worker, mod) {
     worker.on('message', contentMsgHandler);
@@ -64,7 +78,7 @@ pagemods.PageMod({
   }
 });
 
-require("widget").Widget({
+var debridWidget = require("widget").Widget({
 	id: "debrid_widget",
 	label: "DebridMax",
 	contentURL: data.url("icon19.png"),
@@ -72,7 +86,7 @@ require("widget").Widget({
 		height: 150,
 		width : 250,
 		contentURL: data.url("popup.html"),
-		contentScriptFile: [data.url("jquery.js"),data.url("popup.js"),data.url("hostSetter.js")],
+		contentScriptFile: [data.url("jquery.js"),data.url("popup.js"),data.url("hostSetter.js"),data.url("loginChecker.js")],
 		onShow: function(){this.postMessage("load the init method");},
 		onMessage: function(m){
 			switch (m)
