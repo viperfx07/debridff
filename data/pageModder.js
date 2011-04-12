@@ -27,13 +27,16 @@ $('.downloadSelected').click(
 			alert("Select the link first");
 		else
 		{
+			postMessage("loading");
 			if(isLoginToDebridmax() == 1){
-				postMessage("loading");
 				let thehost = setHost(selectedText);
 				generateBy(thehost,selectedText);
 			}	
 			else
-				alert("background_notloggedin");
+			{
+				alert("You are not currently logged in to Debridmax. Please login before using the tool.");
+				postMessage("finish_loading");
+			}
 		}
 });
 	
@@ -90,13 +93,16 @@ $('.downloadAll').click(
 		let parsedlinks = unparsedlinks.split("\n\n");
 		let thelinks = jQuery.trim(parsedlinks.join("\n"));
 		let thehost = setHost(thelinks);
+		postMessage("loading");
 		if(isLoginToDebridmax() == 1){
-			postMessage("loading");
 			let thehost = setHost(thelinks);
 			generateBy(thehost,thelinks);
 		}	
 		else
-			alert("background_notloggedin");
+		{
+			alert("You are not currently logged in to Debridmax. Please login before using the tool.");
+			postMessage("finish_loading");
+		}
 	});
 
 
