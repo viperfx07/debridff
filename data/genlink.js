@@ -1,9 +1,9 @@
 var links="";
 
+//Event listener to get the generated links.
 onMessage = function onMessage(msg)
 {
 	//Temporary variables
-	
 	let anchorlinks="";
 	let startIndex = 0;
 	let endIndex;
@@ -35,11 +35,11 @@ $(document).ready(function(){
 	let message = {'type' : '', 'content' : ''};
 	message.type='ready';
 	message.content='ready';
-	postMessage(JSON.stringify(message));
+	postMessage(JSON.stringify(message)); //ready to get the generated links.
 		
-	$("#loader").show();
+	$("#loader").show(); //show load.gif
 	
-	$("#copy").click(function(){
+	$("#copy").click(function(){ //copy to clipboard
 		message.type='copy';
 		message.content = links;
 		postMessage(JSON.stringify(message));

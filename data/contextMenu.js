@@ -1,13 +1,14 @@
+//Click event listener of the context menu
 on("click",function(node,data){
-	postMessage("loading");
-	if(isLoginToDebridmax() == 1){
-		var thelinks = node.textContent;
-		var host_url = setHost((thelinks.split("\n"))[0]);
-		generateBy(host_url,thelinks);
+	postMessage("loading"); //show loading icon on widget
+	if(isLoginToDebridmax() == 1){ //if logged in
+		var thelinks = node.textContent; //node.textContent is the selected text.
+		var host_url = setHost((thelinks.split("\n"))[0]); //get the filehosting URL 
+		generateBy(host_url,thelinks); //generate the links
 	}	
 	else
 	{
 		alert("You are not currently logged in to Debridmax. Please login before using the tool.");
-		postMessage("finish_loading");
+		postMessage("finish_loading"); //show the default loading icon on widget
 	}
 });

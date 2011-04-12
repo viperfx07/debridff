@@ -1,4 +1,6 @@
 //Generate premium download links
+//theURL: the filehost url string
+//linksControlValue: the filesharing links
 function generateBy(theURL,linksControlValue) {
 		
 	postdata="";
@@ -26,8 +28,8 @@ function generateBy(theURL,linksControlValue) {
 	postdata += "&x=99&y=99"; // random numbers are allowed for x and y.
 	
 	var index=0;
-	var linksarray = new Array();
-	var textInLink = new Array();
+	var linksarray = new Array(); //array for links
+	var textInLink = new Array(); //array for text in the link i.e. <a>text</a>
 	
 	$.ajax({
 		type:"POST",
@@ -41,7 +43,6 @@ function generateBy(theURL,linksControlValue) {
 				linksarray[index]=($(this).attr('href')).toString();
 				textInLink[index]=($(this).text()).toString();
 				index++;
-				
 			});
 			
 			if(index>0)
@@ -51,10 +52,13 @@ function generateBy(theURL,linksControlValue) {
 					"textInLink" : textInLink,
 					"index" : index,
 					"theURL" : theURL
-				};
+				}; //json to be passed to message handler in main.js
 				
 				let strJSON = JSON.stringify(objJSON);
-				window.open(generatedLinkWin,'name','height=300,width=510');
+				
+				//generatedLinkWin variable is defined in the contentScript in main.js
+				//generatedLinkWin: the URL of generated_link.html
+				window.open(generatedLinkWin,'name','height=300,width=510'); 
 				postMessage(strJSON);
 			}
 			else
@@ -68,8 +72,8 @@ function generateBy(theURL,linksControlValue) {
 		},
 		
 		complete: function(){ 
-			$("img#debridff-sw-loader").hide();
-			postMessage("finish_loading");
+			$("img#debridff-sw-loader").hide(); //hides the load.gif on submissionWindow.html
+			postMessage("finish_loading"); //change the widget icon into the default one
 		}
 			
 	});

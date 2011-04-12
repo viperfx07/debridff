@@ -1,5 +1,8 @@
-This is the DebridFF add-on.  It contains:
+v0.1:
+----
+- Ported from Chrome extension
+- No localization
+- No option page
+- No auto-generate
 
-* A program (lib/main.js).
-* A few tests.
-* Some meager documentation.
+DebridFF is an add-on which is ported from the DebridMax Google Chrome extension (https://chrome.google.com/extensions/detail/pmknnkebgligcfhmmfmkghgafojlilfn).
