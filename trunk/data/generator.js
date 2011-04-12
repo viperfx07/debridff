@@ -59,12 +59,12 @@ function generateBy(theURL,linksControlValue) {
 			}
 			else
 			{
-				alert("DebridMax: " + "Error when generate" + " " + "background_verify_message");
+				alert("DebridMax: " + "Error when generate. " + "\nPossible reasons: \n1. The link and/or password is invalid.\n2. The service is down.\n3. The premium accounts are out of order.");
 			}
 			
 		},	
 		error: function(msg){
-			alert("DebridMax: Timeout. " + "background_verify_message");
+			alert("DebridMax: Timeout. " + "\nPossible reasons: \n1. The link and/or password is invalid.\n2. The service is down.\n3. The premium accounts are out of order.");
 		},
 		
 		complete: function(){ 
