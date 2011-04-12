@@ -1,8 +1,8 @@
-onMessage= function onMessage(msg)
-{	
+onMessage= function onMessage(msg){	
 	init();
 }
 
+//Open the Submission Window
 function openSubWindow() {
 	var width = 435;
 	var height = 400;
@@ -15,9 +15,9 @@ function openSubWindow() {
 
 function init()
 {
-	$(".loader").show();
-	$("#dm_details").hide();
-	$("#subWindowButton").hide();
+	$(".debridff-loader").show(); //show loader
+	$("#dm_details").hide(); //hide details
+	$("#subWindowButton").hide(); //h
 	login_details.DM.user = login_details.DM.limit = login_details.DM.quota = "";
 	
 	//If logged in, show the "Open downloader link/button"
@@ -28,13 +28,16 @@ function init()
 	$("#dm_details").html(login_details.DM.user +"<br/>"+ login_details.DM.limit +"<br/>"+ login_details.DM.quota);
 	$("#dm_details").show();
 	
-	//Add root server url prior to the img src 
+	
+	//Add root server url prior to the img src (this for "OK" image)
 	$("img").each(function(){
 		$(this).attr({src:DM_ROOT + $(this).attr('src')});
 	});
 	
+	//if subWindowButton is cliked
 	$("#subWindowButton").click(openSubWindow);
 	
+	//If (Login) link is clicked
 	$("#login").click(function(){
 		postMessage('openLoginTab');
 		postMessage('hidePanel');

@@ -1,34 +1,34 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-            "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-	<style type="text/css">
-	body {
-		background: #000000;
-		margin: 0;
-		padding: 0;
-		font: 11px normal Verdana, Arial, Helvetica, sans-serif;
-		color: #fff;
-		width:435px;
-		overflow-x:hidden;
-	}
-
-	.container {height:350px; width: 435px; margin: 10px auto; float:left;}
-	
-	</style>
-</head>
-
-<body>
-	<div id="logo"><img src='logo.png' /></div>
-	<div class="container">
-		<div id="text1">Note: RS - 10 links max. VideoBB - 1 link max</div>
-		<span id="text2">Enter RS/MU/MV/HF/FS/UL/FN/DF/VBB/UD link(s) (1 link per line, maximum 8 links):</span>
-		<textarea id="debridff-link" cols="48" rows="10"></textarea>
-		<br />
-		<span id="mu_pass_note">MU/MV file password (optional):</span>
-		<input id="debridff-mu_pass" type="text" name="mu_pass" /><img src="load.gif" id="debridff-sw-loader" style="padding-left: 50px;"/>
-		<br />
-		<center><input type="button" id="debridff-generate" value="GO"/></center>
-	</div>
-</body>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>DebridFF: Submission Window</title>
+		<style type="text/css">
+		body {
+			background: #000000;
+			margin: 0;
+			padding: 0;
+			font: 11px normal Verdana, Arial, Helvetica, sans-serif;
+			color: #fff;
+			width:435px;
+			overflow-x:hidden;
+		}
+		.container {height:350px; width: 435px; margin: 10px auto; float:left;}
+		</style>
+	</head>
+	<body>
+		<div id="logo"><img src='logo.png' alt="logo" /></div>
+		<div class="container">
+			<div id="text1">Note: RS - 10 links max. VideoBB - 1 link max</div>
+			<span id="text2">Enter RS/MU/MV/HF/FS/UL/FN/DF/VBB/UD link(s) (1 link per line, maximum 8 links):</span>
+			<textarea id="debridff-link" cols="48" rows="10"></textarea>
+			<br />
+			<span id="mu_pass_note">MU/MV file password (optional):</span>
+			<input id="debridff-mu_pass" type="text" name="mu_pass" />
+			<img src="load.gif" id="debridff-sw-loader" alt="loader" style="padding-left: 50px;"/>
+			<br />
+			<center><input type="button" id="debridff-generate" value="GO"/></center>
+		</div>
+	</body>
 </html>

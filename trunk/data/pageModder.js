@@ -1,3 +1,4 @@
+//Add Download All and Download Selected buttons before td.code, pre, and blockquote element
 $("td.code, pre, blockquote").each(function() {
 	if($(this).html().indexOf('rapidshare')>=0 ||
 		$(this).html().indexOf('megaupload')>=0 ||
@@ -14,7 +15,6 @@ $("td.code, pre, blockquote").each(function() {
 				"<input type='button' class='downloadAll' value='" + "Download All" + "' />"+
 				"<input type='button' class='downloadSelected' value='" + "Download Selected" + "' />"
 		);
-	
 	}
 });
 	
@@ -27,20 +27,37 @@ $('.downloadSelected').click(
 			alert("Select the link first");
 		else
 		{
-			postMessage("loading");
-			if(isLoginToDebridmax() == 1){
-				let thehost = setHost(selectedText);
-				generateBy(thehost,selectedText);
+			postMessage("loading"); //show loading icon on widget
+			if(isLoginToDebridmax() == 1){ //if logged in
+				let thehost = setHost(selectedText); //get the filehosting URL 
+				generateBy(thehost,selectedText); //generate the links
 			}	
 			else
 			{
 				alert("You are not currently logged in to Debridmax. Please login before using the tool.");
-				postMessage("finish_loading");
+				postMessage("finish_loading"); //show the default loading icon on widget
 			}
 		}
 });
 	
-
+//"Download" button on page
+$('.downloadAll').click(
+	function(){
+		let unparsedlinks = jQuery.trim($(this).next().next().text());//get the text next to the button
+		let parsedlinks = unparsedlinks.split("\n\n");
+		let thelinks = jQuery.trim(parsedlinks.join("\n"));
+		let thehost = setHost(thelinks);
+		postMessage("loading");
+		if(isLoginToDebridmax() == 1){
+			let thehost = setHost(thelinks);
+			generateBy(thehost,thelinks);
+		}	
+		else
+		{
+			alert("You are not currently logged in to Debridmax. Please login before using the tool.");
+			postMessage("finish_loading");
+		}
+});
 /*	
 //BEGIN Direct Download Functions
 function requestLink(thelinks)
@@ -86,23 +103,6 @@ chrome.extension.sendRequest({requestType:"getAutoGenVal"}, function(response){
 //END Direct Download Functions
 */
 
-//"Download" button on page
-$('.downloadAll').click(
-	function(){
-		let unparsedlinks = jQuery.trim($(this).next().next().text());//get the text next to the button
-		let parsedlinks = unparsedlinks.split("\n\n");
-		let thelinks = jQuery.trim(parsedlinks.join("\n"));
-		let thehost = setHost(thelinks);
-		postMessage("loading");
-		if(isLoginToDebridmax() == 1){
-			let thehost = setHost(thelinks);
-			generateBy(thehost,thelinks);
-		}	
-		else
-		{
-			alert("You are not currently logged in to Debridmax. Please login before using the tool.");
-			postMessage("finish_loading");
-		}
-	});
+
 
 
