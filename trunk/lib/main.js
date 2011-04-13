@@ -24,6 +24,8 @@ function subWindowMsgHandler(msg) {
 		showDefaultIconOnWidget();
 	else if(msg=="open_debrid")
 		require("windows").browserWindows.open("http://www.debridmax.com/en/");
+	else if(msg=="open_donate")
+		require("windows").browserWindows.open("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VPJ5YQHBG7L36");
 	else
 		ss.storage.parsedJSONfromSubWin = JSON.parse(msg);
 } 

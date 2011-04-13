@@ -23,5 +23,6 @@ $("#debridff-generate").click(function(){
 
 $(document).ready(function(){
 	$("img#debridff-sw-loader").hide(); //hide loader
+	$("a#donatelink").click(function(){ postMessage("open_donate");});
 	$("a#logolink").click(function(){ postMessage("open_debrid");});
 });
