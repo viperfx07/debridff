@@ -4,7 +4,7 @@ $("#debridff-generate").click(function(){
 	if(isLoginToDebridmax() == 1) //if logged in
 	{
 		links = jQuery.trim($("#debridff-link").val());
-		host_url = setHost((links.split("\n"))[0];
+		host_url = setHost((links.split("\n"))[0]);
 		if(host_url == MD_DM)
 		{
 			if($("#debridff-mu_pass").val() != "")
@@ -23,4 +23,5 @@ $("#debridff-generate").click(function(){
 
 $(document).ready(function(){
 	$("img#debridff-sw-loader").hide(); //hide loader
+	$("a#logolink").click(function(){ postMessage("open_debrid");});
 });
