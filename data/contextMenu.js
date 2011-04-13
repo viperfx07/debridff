@@ -2,8 +2,9 @@
 on("click",function(node,data){
 	postMessage("loading"); //show loading icon on widget
 	if(isLoginToDebridmax() == 1){ //if logged in
-		var thelinks = node.textContent; //node.textContent is the selected text.
-		var host_url = setHost((thelinks.split("\n"))[0]); //get the filehosting URL 
+		var thelinks = jQuery.trim(window.getSelection()); //node.textContent is the selected text.
+		console.log(thelinks);
+		var host_url = setHost((thelinks.split("\r\n"))[0]); //get the filehosting URL 
 		generateBy(host_url,thelinks); //generate the links
 	}	
 	else
