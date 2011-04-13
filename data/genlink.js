@@ -25,10 +25,8 @@ onMessage = function onMessage(msg)
 		anchorlinks += "Link " + (i+1) + ': <a href='+linksarray[i]+'>'+textInLink[i]+'</a><br/>';
 	}
 	
-	document.getElementById('links').value += links;
 	$("#anchorlinks").append(anchorlinks);
 	$("#loader").hide();
-	$("#links").attr('rows',totallinks*2)
 }
 
 $(document).ready(function(){
@@ -43,5 +41,6 @@ $(document).ready(function(){
 		message.type='copy';
 		message.content = links;
 		postMessage(JSON.stringify(message));
+		alert("Link(s) copied");
 	});
 });

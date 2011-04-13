@@ -17,12 +17,22 @@ function init()
 {
 	$(".debridff-loader").show(); //show loader
 	$("#dm_details").hide(); //hide details
-	$("#subWindowButton").hide(); //h
+	$("#subWindowButton").hide(); //hide "Open Downloader" link
 	login_details.DM.user = login_details.DM.limit = login_details.DM.quota = "";
 	
+	var notloggedinMsg = "Note: You are not currently logged in to Debridmax. Please login before using the tool." + '(<a href="#" id="login">Login</a>)';
+	
+	
 	//If logged in, show the "Open downloader link/button"
-	if(isLoginToDebridmax()==1)
+	isLoginToDebridmax();
+	if(login_details.DM.user=="" || login_details.DM.user==notloggedinMsg)
+	{
+		login_details.DM.user= notloggedinMsg;
+	}
+	else
+	{
 		$("#subWindowButton").show();
+	}
 	
 	//Write login, credit, and server load;
 	$("#dm_details").html(login_details.DM.user +"<br/>"+ login_details.DM.limit +"<br/>"+ login_details.DM.quota);
