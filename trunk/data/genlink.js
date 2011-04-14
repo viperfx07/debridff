@@ -12,8 +12,7 @@ onMessage = function onMessage(msg)
 	let totallinks = msg.index;
 	let linksarray = msg.linksarray;
 	let textInLink = msg.textInLink;
-	let theURL = msg.theURL;
-	
+		
 	endIndex = startIndex + totallinks - 1
 			
 	for(i=startIndex;i<=endIndex;i++)

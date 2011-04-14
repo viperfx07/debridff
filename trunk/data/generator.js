@@ -26,7 +26,6 @@ function generateBy(theURL,linksControlValue) {
 	}
 	
 	postdata += "&x=99&y=99"; // random numbers are allowed for x and y.
-	
 	var index=0;
 	var linksarray = new Array(); //array for links
 	var textInLink = new Array(); //array for text in the link i.e. <a>text</a>
@@ -50,8 +49,7 @@ function generateBy(theURL,linksControlValue) {
 				let objJSON = {
 					"linksarray" : linksarray,
 					"textInLink" : textInLink,
-					"index" : index,
-					"theURL" : theURL
+					"index" : index
 				}; //json to be passed to message handler in main.js
 				
 				let strJSON = JSON.stringify(objJSON);
