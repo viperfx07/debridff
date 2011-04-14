@@ -79,7 +79,7 @@ pagemods.PageMod({
   include: "*",
   contentScriptWhen: 'ready',
   contentScriptFile: [data.url("jquery.js"), data.url("generator.js"), data.url("hostSetter.js"),
-					 data.url("pageModder.js"),data.url("loginChecker.js")],
+					 data.url("pageModder.js"),data.url("loginChecker.js"),data.url("context_button.js")],
   contentScript: 'var generatedLinkWin="' + data.url("generated_link.html") + '";',
   onAttach: function onAttach(worker, mod) {
     worker.on('message', contentMsgHandler);

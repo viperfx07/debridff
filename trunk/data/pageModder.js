@@ -28,15 +28,8 @@ $('.downloadSelected').click(
 		else
 		{
 			postMessage("loading"); //show loading icon on widget
-			if(isLoginToDebridmax() == 1){ //if logged in
-				let thehost = setHost(selectedText); //get the filehosting URL 
-				generateBy(thehost,selectedText); //generate the links
-			}	
-			else
-			{
-				alert("You are not currently logged in to Debridmax. Please login before using the tool.");
-				postMessage("finish_loading"); //show the default loading icon on widget
-			}
+			let thehost = setHost(selectedText); //get the filehosting URL 
+			generateBy(thehost,selectedText); //generate the links
 		}
 });
 	
@@ -48,61 +41,7 @@ $('.downloadAll').click(
 		let thelinks = jQuery.trim(parsedlinks.join("\n"));
 		let thehost = setHost(thelinks);
 		postMessage("loading");
-		if(isLoginToDebridmax() == 1){
-			let thehost = setHost(thelinks);
-			generateBy(thehost,thelinks);
-		}	
-		else
-		{
-			alert("You are not currently logged in to Debridmax. Please login before using the tool.");
-			postMessage("finish_loading");
-		}
+		
+		let thehost = setHost(thelinks);
+		generateBy(thehost,thelinks);
 });
-/*	
-//BEGIN Direct Download Functions
-function requestLink(thelinks)
-{
-	thehost = setHost(thelinks);
-	chrome.extension.sendRequest({requestType:"dl", the_links:thelinks, the_host:thehost});
-}
-
-
-//change the link element's class for certain filehosts into class directlyDownloaded
-//It enables users to directly generate the link the users click.
-chrome.extension.sendRequest({requestType:"getAutoGenVal"}, function(response){
-	if(response.auto_gen_val==1)
-	{
-		$("a[href]").each(
-			function()
-			{
-				
-					var ori_link = $(this).attr('href');		
-					if(ori_link.indexOf('megaupload.com/?d=')>=0 || 
-					   ori_link.indexOf('hotfile.com/dl/')>=0 ||
-					   ori_link.indexOf('rapidshare.com/files/')>=0 ||
-					   ori_link.indexOf('4shared.com/file/')>=0 ||
-					   ori_link.indexOf('fileserve.com/file/')>=0 ||
-					   ori_link.indexOf('uploading.com/files/')>=0 ||
-					   ori_link.indexOf('depositfiles.com/files/')>=0 ||
-					   ori_link.indexOf('uploaded.to/file/') >=0 )
-					{			
-						$(this).attr({class:"directlyDownload"});
-					}
-				}
-			
-		);
-
-		$("a.directlyDownload").click(function(){
-			requestLink($(this).attr('href'));
-			return false;
-		});
-	}
-});
-
-
-//END Direct Download Functions
-*/
-
-
-
-
