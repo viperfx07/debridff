@@ -1,0 +1,7 @@
+v0.1:
+----
+- Ported from Chrome extension
+- No localization
+- No option page
+- No auto-generate
++ context button
