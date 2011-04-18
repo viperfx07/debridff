@@ -55,7 +55,7 @@ function contentMsgHandler(msg){
 pagemods.PageMod({
 	include: data.url("submissionWindow.html"),
 	contentScriptWhen: 'ready',
-	contentScriptFile: [data.url("jquery.js"), data.url("generator.js"), data.url("hostSetter.js"), data.url("subWin.js"), data.url("loginChecker.js")],
+	contentScriptFile: [data.url("jquery.js"), data.url("generator.js"), data.url("hostSetter.js"), data.url("subWin.js"), data.url("loginChecker.js"), data.url("htmlparser.js")],
 	contentScript: 'var generatedLinkWin="' + data.url("generated_link.html") + '";',
 	onAttach: function onAttach(worker, mod){
 		worker.on('message', subWindowMsgHandler);
@@ -74,18 +74,20 @@ pagemods.PageMod({
 	}
 });
 
+
 //Page-mod object for websites
 pagemods.PageMod({
   include: "*",
   contentScriptWhen: 'ready',
-  contentScriptFile: [data.url("jquery.js"), data.url("generator.js"), data.url("hostSetter.js"),
-					 data.url("pageModder.js"),data.url("loginChecker.js"),data.url("context_button.js")],
+  contentScriptFile: [data.url("generator.js"), data.url("hostSetter.js"),
+					 data.url("pageModder.js"),data.url("loginChecker.js"),data.url("context_button.js"),data.url("htmlparser.js")],
   contentScript: 'var generatedLinkWin="' + data.url("generated_link.html") + '";',
   onAttach: function onAttach(worker, mod) {
     worker.on('message', contentMsgHandler);
     contentWorker = worker;
   }
 });
+
 
 //Debridmax Widget
 var debridWidget = require("widget").Widget({
@@ -96,8 +98,8 @@ var debridWidget = require("widget").Widget({
 		height: 150,
 		width : 250,
 		contentURL: data.url("popup.html"),
-		contentScriptFile: [data.url("jquery.js"),data.url("popup.js"),data.url("hostSetter.js"),data.url("loginChecker.js")],
-		onShow: function(){this.postMessage("load the init method");},
+		contentScriptFile: [data.url("jquery.js"),data.url("popup.js"),data.url("hostSetter.js"),data.url("loginChecker.js"),data.url("htmlparser.js")],
+		onShow: function(){this.postMessage("load");},
 		onMessage: function(m){
 			switch (m)
 			{
@@ -114,12 +116,13 @@ var debridWidget = require("widget").Widget({
 	})
 });
 
+
 //Context menu
 var selectionContextMenu = contextMenu.Item({
 	label: "Download Selected with Debridmax",
 	context: contextMenu.SelectionContext(),
 	contentScriptWhen: 'ready',
-	contentScriptFile: [data.url("jquery.js"), data.url("generator.js"), data.url("hostSetter.js"),data.url("contextMenu.js"),data.url("loginChecker.js")],
+	contentScriptFile: [data.url("generator.js"), data.url("hostSetter.js"),data.url("contextMenu.js"),data.url("loginChecker.js"),data.url("htmlparser.js")],
 	contentScript: 'var generatedLinkWin="' + data.url("generated_link.html") + '";',
 	onMessage: function(m){
 		switch (m)
@@ -136,5 +139,3 @@ var selectionContextMenu = contextMenu.Item({
 		}
 	}
 });
-
-
