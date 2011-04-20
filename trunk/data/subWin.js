@@ -1,7 +1,5 @@
 //Event for debridff-generate button
 $("#debridff-generate").click(function(){
-	$("img#debridff-sw-loader").show(); //show loader gif
-	
 	links = jQuery.trim($("#debridff-link").val());
 	host_url = setHost((links.split("\n"))[0]);
 	if(host_url == MD_DM)
@@ -11,7 +9,9 @@ $("#debridff-generate").click(function(){
 		else
 			links = links + "&" + "";
 	}
-	generateBy(host_url,links); //generate links
+	 //generate links
+	generateBy(host_url,links);
+	
 });
 
 $(document).ready(function(){
