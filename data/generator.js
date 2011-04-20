@@ -4,7 +4,7 @@
 
 //Check DebridMax Login status
 function generateBy(theURL,linksControlValue) {
-	
+	postMessage("loading");
 	isLoginToDebridmax(function(isLoggedIn,login_details){
 		if(isLoggedIn)
 		{
@@ -59,7 +59,7 @@ function generateBy(theURL,linksControlValue) {
 						
 						//generatedLinkWin variable is defined in the contentScript in main.js
 						//generatedLinkWin: the URL of generated_link.html
-						window.open(generatedLinkWin,'name','height=300,width=510'); 
+						openGenWindow(generatedLinkWin);
 						postMessage(strJSON);
 					}
 					else
@@ -84,4 +84,14 @@ function generateBy(theURL,linksControlValue) {
 			postMessage("finish_loading");
 		}
 	});
+}
+
+//Open the Submission Window
+function openGenWindow(url) {
+	var width = 435;
+	var height = 400;
+	var left = parseInt((screen.availWidth/2) - (width/2));
+	var top = parseInt((screen.availHeight/2) - (height/2));
+	var windowFeatures = "width=" + width + ",height=" + height + ",status,resizable,left=" + left + ",top=" + top + "screenX=" + left + ",screenY=" + top;
+	myWindow = window.open(url, "genWind", windowFeatures);
 }

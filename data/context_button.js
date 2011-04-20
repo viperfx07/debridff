@@ -53,8 +53,7 @@ var ContextButton = function()
 			{
 				thelinks = ((_linkFounds.toString()).split(",")).join("\n");
 				var the_host  = setHost(_linkFounds[0]);
-				postMessage("loading");
-                generateBy(the_host,thelinks);
+				generateBy(the_host,thelinks);
 				e.stopPropagation();
 			},
 			false);

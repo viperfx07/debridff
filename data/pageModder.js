@@ -36,7 +36,6 @@ function dsFunction(){
 		alert("Select the link first");
 	else
 	{
-		postMessage("loading"); //show loading icon on widget
 		var thehost = setHost(selectedText); //get the filehosting URL 
 		generateBy(thehost,selectedText); //generate the links
 	}
@@ -48,7 +47,6 @@ function daFunction()
 	var parsedlinks = unparsedlinks.split("\n\n");
 	var thelinks = ((parsedlinks.join("\n")).toString()).trim();
 	var thehost = setHost(thelinks);
-	postMessage("loading");
 	generateBy(thehost,thelinks);
 	
 }
