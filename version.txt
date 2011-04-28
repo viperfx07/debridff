@@ -1,3 +1,14 @@
+v0.2.3:
+-------
+- Fixed login_details to not show the quota and limit anymore
+- Fixed the validation for any links that are not supported
+- Added link context menu
+- Modified the widget width
+
+v0.2.2:
+-------
+- No changes, just tried to upload a new version for AMO site
+
 v0.2.1:
 -------
 - Changed the submissionWindow.html to use show loader on widget instead of the submission page.
@@ -13,4 +24,4 @@ v0.1:
 - No localization
 - No option page
 - No auto-generate
-+ context button
+- context button
