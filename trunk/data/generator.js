@@ -26,6 +26,11 @@ function generateBy(theURL,linksControlValue) {
 				case VBB_DM:
 					postdata = "link="+encodeURIComponent(linksControlValue);
 					break;
+				
+				default:
+					alert("The link is invalid");
+					postMessage("finish_loading");
+					return;
 			}
 			
 			postdata += "&x=99&y=99"; // random numbers are allowed for x and y.

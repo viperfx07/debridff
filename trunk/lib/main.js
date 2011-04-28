@@ -97,8 +97,8 @@ var debridWidget = require("widget").Widget({
 	label: "DebridMax",
 	contentURL: data.url("icon19.png"),
 	panel: panels.Panel({
-		height: 150,
-		width : 250,
+		height: 90,
+		width : 200,
 		contentURL: data.url("popup.html"),
 		contentScriptFile: [data.url("jquery.js"),data.url("popup.js"),data.url("hostSetter.js"),data.url("loginChecker.js"),data.url("htmlparser.js")],
 		onShow: function(){this.postMessage("load");},
@@ -119,12 +119,35 @@ var debridWidget = require("widget").Widget({
 });
 
 
-//Context menu
+//Selection context menu
 var selectionContextMenu = contextMenu.Item({
-	label: "Download Selected with Debridmax",
+	label: "Download selected with Debridmax",
 	context: contextMenu.SelectionContext(),
 	contentScriptWhen: 'ready',
-	contentScriptFile: [data.url("generator.js"), data.url("hostSetter.js"),data.url("contextMenu.js"),data.url("loginChecker.js"),data.url("htmlparser.js")],
+	contentScriptFile: [data.url("generator.js"), data.url("hostSetter.js"),data.url("selectioncontextMenu.js"),data.url("loginChecker.js"),data.url("htmlparser.js")],
+	contentScript: 'var generatedLinkWin="' + data.url("generated_link.html") + '";',
+	onMessage: function(m){
+		switch (m)
+		{
+			case "loading" :
+				showLoaderIconOnWidget();
+				break;
+			case "finish_loading" :
+				showDefaultIconOnWidget();
+				break;
+			default:
+				ss.storage.parsedJSONfromSubWin = JSON.parse(m);
+				return;
+		}
+	}
+});
+
+//Link context menu
+var linkContextMenu = contextMenu.Item({
+	label: "Download link with Debridmax",
+	context: contextMenu.SelectorContext("a[href]"),
+	contentScriptWhen: 'ready',
+	contentScriptFile: [data.url("generator.js"), data.url("hostSetter.js"),data.url("linkcontextMenu.js"),data.url("loginChecker.js"),data.url("htmlparser.js")],
 	contentScript: 'var generatedLinkWin="' + data.url("generated_link.html") + '";',
 	onMessage: function(m){
 		switch (m)

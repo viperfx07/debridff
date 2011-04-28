@@ -12,7 +12,7 @@ onMessage= function onMessage(msg){
 			$("#subWindowButton").show();
 				
 		//Write login, credit, and server load;
-		$("#dm_details").html(login_details.user +"<br/>"+ login_details.limit +"<br/>"+ login_details.quota);
+		$("#dm_details").html(login_details.user);
 		$("#dm_details").show();
 				
 		//Add root server url prior to the img src (this for "OK" image)
