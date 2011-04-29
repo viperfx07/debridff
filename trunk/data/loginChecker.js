@@ -25,6 +25,6 @@ function isLoginToDebridmax(callback) {
 	}
 	var timestamp = new Date();
 	var times = timestamp.getTime().toString();
-	xhr.open("GET", "http://www.debridmax.com/en/rapidshare/?" + times);
+	xhr.open("GET", "http://www.debridmax.com/en/rapidshare/?" + times, true);
 	xhr.send("");
 }
