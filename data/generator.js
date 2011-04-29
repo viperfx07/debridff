@@ -79,7 +79,7 @@ function generateBy(theURL,linksControlValue) {
 			  }
 			}
 			
-			xhr.open("POST", theURL + "index.php", false);
+			xhr.open("POST", theURL + "index.php", true);
 			xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 			xhr.send(postdata);
 		}
