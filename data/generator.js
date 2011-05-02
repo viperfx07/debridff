@@ -44,11 +44,15 @@ function generateBy(theURL,linksControlValue) {
 					var linksarray = new Array(); //array for links
 					var textInLink = new Array(); //array for text in the link i.e. <a>text</a>
 					
-					var links_DOM = (HTMLParser(xhr.responseText)).querySelectorAll("div.entry > p > a, div#debridmax > a");
-					
+					var links_DOM = (HTMLParser(xhr.responseText)).querySelectorAll("span#blockblockB > p > a, div#debridmax > a");
+										
 					for (var i = 0; i < links_DOM.length; ++i) {
-						linksarray[i]= links_DOM[i].getAttribute('href');
-						textInLink[i]= links_DOM[i].textContent;;
+						if(theURL == VBB_DM)
+							linksarray[i]= DM_ROOT + links_DOM[i].getAttribute("href");
+						else	
+							linksarray[i]= links_DOM[i].getAttribute("href");
+						
+						textInLink[i]= links_DOM[i].textContent;
 						index++;
 					}
 					

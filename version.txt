@@ -1,3 +1,12 @@
+v0.2.4
+------
+- Better filter codes for hostSetter and pageModder
+- Fixed videobb (due to Debridmax's bad programming style)
+
+v0.2.3.1
+--------
+- Changed sync requests to async requests.
+
 v0.2.3:
 -------
 - Fixed login_details to not show the quota and limit anymore

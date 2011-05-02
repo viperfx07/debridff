@@ -1,17 +1,10 @@
 //Add Download All and Download Selected buttons before td.code, pre, and blockquote element
-var elementsWithButtons = document.querySelectorAll("td.code, pre, blockquote");
-for(var i = 0; i < elementsWithButtons.length; ++i)
+
+var ewb = document.querySelectorAll("td.code, pre, blockquote"); //ewb = element with buttons
+
+for(var i = 0; i< ewb.length; i++)
 {
-	if(elementsWithButtons[i].innerHTML.indexOf('rapidshare')>=0 ||
-		elementsWithButtons[i].innerHTML.indexOf('megaupload')>=0 ||
-		elementsWithButtons[i].innerHTML.indexOf('hotfile')>=0 ||
-		elementsWithButtons[i].innerHTML.indexOf('uploading')>=0 ||
-		elementsWithButtons[i].innerHTML.indexOf('fileserve')>=0 ||
-		elementsWithButtons[i].innerHTML.indexOf('filesonic')>=0 ||
-		elementsWithButtons[i].innerHTML.indexOf('depositfiles')>=0 ||
-		elementsWithButtons[i].innerHTML.indexOf('uploaded')>=0 ||
-		elementsWithButtons[i].innerHTML.indexOf('videobb')>=0
-	)
+	if(filterTheLink(ewb[i].innerHTML)>=0)
 	{
 		var downAll = document.createElement("input");
 		downAll.setAttribute("class","downloadAll");
@@ -24,10 +17,11 @@ for(var i = 0; i < elementsWithButtons.length; ++i)
 		downSelected.setAttribute("type","button");
 		downSelected.setAttribute("value","Download Selected");
 		downSelected.addEventListener("click",dsFunction,false);
-		
-		var insertedElement = elementsWithButtons[i].parentNode.insertBefore(downSelected,elementsWithButtons[i]);
+	
+		var insertedElement = ewb[i].parentNode.insertBefore(downSelected,ewb[i]);
 		insertedElement.parentNode.insertBefore(downAll,insertedElement);
 	}
+
 }
 
 function dsFunction(){
@@ -48,5 +42,4 @@ function daFunction()
 	var thelinks = ((parsedlinks.join("\n")).toString()).trim();
 	var thehost = setHost(thelinks);
 	generateBy(thehost,thelinks);
-	
 }
