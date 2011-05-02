@@ -1,7 +1,5 @@
 //Add Download All and Download Selected buttons before td.code, pre, and blockquote element
-
 var ewb = document.querySelectorAll("td.code, pre, blockquote"); //ewb = element with buttons
-
 for(var i = 0; i< ewb.length; i++)
 {
 	if(filterTheLink(ewb[i].innerHTML)>=0)
@@ -21,7 +19,6 @@ for(var i = 0; i< ewb.length; i++)
 		var insertedElement = ewb[i].parentNode.insertBefore(downSelected,ewb[i]);
 		insertedElement.parentNode.insertBefore(downAll,insertedElement);
 	}
-
 }
 
 function dsFunction(){
