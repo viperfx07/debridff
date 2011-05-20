@@ -1,3 +1,8 @@
+onMessage = function onMessage(msg){
+	$("#debridff-link").val(msg);
+	countLinks();
+}
+
 function countLinks(){
 
 	var str = $.trim($("#debridff-link").val());
@@ -23,7 +28,7 @@ $("#debridff-generate").click(function(){
 	}
 	 //generate links
 	generateBy(host_url,links);
-	
+	postMessage("clearLinkCache");
 });
 
 $(document).ready(function(){
