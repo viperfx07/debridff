@@ -8,7 +8,8 @@ function isLoginToDebridmax(callback) {
 	  if (xhr.readyState == 4) {
 		if (xhr.status == 200) {
 			var data = xhr.responseText;
-			if(data.indexOf("Remember")>=0){
+			console.log(data);
+			if(data.indexOf("document.location.href")>=0){ //not logged in
 				login_details.user="Note: You are not currently logged in to Debridmax. Please login before using the tool." + '(<a href="#" id="login">Login</a>)';
 			}
 			else{
@@ -25,6 +26,6 @@ function isLoginToDebridmax(callback) {
 	}
 	var timestamp = new Date();
 	var times = timestamp.getTime().toString();
-	xhr.open("GET", "http://www.debridmax.com/en/rapidshare/?" + times, true);
+	xhr.open("GET", "http://www.debridmax.com/multimax/?" + times, true);
 	xhr.send("");
 }
