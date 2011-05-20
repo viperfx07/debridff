@@ -1,5 +1,4 @@
 var links="";
-
 //Event listener to get the generated links.
 onMessage = function onMessage(msg)
 {
@@ -29,7 +28,7 @@ onMessage = function onMessage(msg)
 }
 
 $(document).ready(function(){
-	let message = {'type' : '', 'content' : ''};
+	var message = {'type' : '', 'content' : ''};
 	message.type='ready';
 	message.content='ready';
 	postMessage(JSON.stringify(message)); //ready to get the generated links.

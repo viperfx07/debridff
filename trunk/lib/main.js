@@ -5,6 +5,8 @@ var pagemods = require("page-mod");
 var panels = require("panel");
 var contextMenu = require("context-menu");
 
+ss.storage.cachedLinks="";
+
 //Declaring workers
 var contentWorker, subWinWorker, genLinkWorker;
 
@@ -28,9 +30,10 @@ function subWindowMsgHandler(msg) {
 		require("windows").browserWindows.open("http://www.debridmax.com/en/");
 	else if(msg=="open_donate")
 		require("windows").browserWindows.open("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VPJ5YQHBG7L36");
-	else{
+	else if(msg=="clearLinkCache")	
+		ss.storage.cachedLinks="";
+	else
 		ss.storage.parsedJSONfromSubWin = JSON.parse(msg);
-	}
 } 
 
 //generated link window message handler for its page-mod
@@ -53,6 +56,23 @@ function contentMsgHandler(msg){
 		ss.storage.parsedJSONfromSubWin = JSON.parse(msg);
 }
 
+//send the link to submission window
+function sendLinkToSubWin(links)
+{
+	if(ss.storage.cachedLinks)
+		ss.storage.cachedLinks += links + "\r\n";
+	else
+		ss.storage.cachedLinks = links + "\r\n";
+	
+	debridWidget.panel.postMessage("openSubWin");
+}
+
+//to make sure that the subwin always checks the cachedLinks when it's opened and the worker's attached.
+function postLinksToSubWin(){
+	if(ss.storage.cachedLinks)
+		subWinWorker.postMessage(ss.storage.cachedLinks);
+}
+
 //Page-mod object for submissionWindow.html
 pagemods.PageMod({
 	include: data.url("submissionWindow.html"),
@@ -62,6 +82,7 @@ pagemods.PageMod({
 	onAttach: function onAttach(worker, mod){
 		worker.on('message', subWindowMsgHandler);
 		subWinWorker = worker;
+		postLinksToSubWin();
 	}
 });
 
@@ -120,8 +141,8 @@ var debridWidget = require("widget").Widget({
 
 
 //Selection context menu
-var selectionContextMenu = contextMenu.Item({
-	label: "Download selected with Debridmax",
+var selectionContextMenu = contextMenu.Menu({
+	label: "Debridmax",
 	context: contextMenu.SelectionContext(),
 	contentScriptWhen: 'ready',
 	contentScriptFile: [data.url("generator.js"), data.url("hostSetter.js"),data.url("selectioncontextMenu.js"),data.url("loginChecker.js"),data.url("htmlparser.js")],
@@ -136,15 +157,23 @@ var selectionContextMenu = contextMenu.Item({
 				showDefaultIconOnWidget();
 				break;
 			default:
-				ss.storage.parsedJSONfromSubWin = JSON.parse(m);
+				var msg = JSON.parse(m);
+				if(msg.type == "send_link_to_subwin")
+					sendLinkToSubWin(msg.content);
+				else
+					ss.storage.parsedJSONfromSubWin = JSON.parse(m);
 				return;
 		}
-	}
+	},
+	items: [
+	contextMenu.Item({ label: "Download selected", data: "ddl" }),
+    contextMenu.Item({ label: "Send to submission window", data: "subwin" })
+	]
 });
 
 //Link context menu
-var linkContextMenu = contextMenu.Item({
-	label: "Download link with Debridmax",
+var linkContextMenu = contextMenu.Menu({
+	label: "Debridmax",
 	context: contextMenu.SelectorContext("a[href]"),
 	contentScriptWhen: 'ready',
 	contentScriptFile: [data.url("generator.js"), data.url("hostSetter.js"),data.url("linkcontextMenu.js"),data.url("loginChecker.js"),data.url("htmlparser.js")],
@@ -159,8 +188,16 @@ var linkContextMenu = contextMenu.Item({
 				showDefaultIconOnWidget();
 				break;
 			default:
-				ss.storage.parsedJSONfromSubWin = JSON.parse(m);
+				var msg = JSON.parse(m);
+				if(msg.type == "send_link_to_subwin")
+					sendLinkToSubWin(msg.content);
+				else
+					ss.storage.parsedJSONfromSubWin = JSON.parse(m);
 				return;
 		}
-	}
+	},
+	items: [
+    contextMenu.Item({ label: "Download link", data: "ddl" }),
+    contextMenu.Item({ label: "Send to submission window", data: "subwin" })
+    ]
 });

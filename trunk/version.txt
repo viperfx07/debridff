@@ -4,7 +4,7 @@ v0.3
 - Changed logo.png
 - Modified context_button.js a bit
 - Modified hostSetter.js (fix the hostFilter and setHost function)
-- TODO add context menu for sending the link to submission window
+- Added context menu for sending the link to submission window
 - Added link counter to submission window
 - TODO modify generator.js
 - TODO modifiy genlink.js
