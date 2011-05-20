@@ -97,7 +97,7 @@ var debridWidget = require("widget").Widget({
 	label: "DebridMax",
 	contentURL: data.url("icon19.png"),
 	panel: panels.Panel({
-		height: 90,
+		height: 110,
 		width : 200,
 		contentURL: data.url("popup.html"),
 		contentScriptFile: [data.url("jquery.js"),data.url("popup.js"),data.url("hostSetter.js"),data.url("loginChecker.js"),data.url("htmlparser.js")],

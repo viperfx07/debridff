@@ -1,13 +1,13 @@
 /*
-* Source: Real-Debrid Chrome Plugin
+* Source: adapted from Real-Debrid Plugin (which is also adapted from http://code.google.com/p/contextsearch/source/browse/trunk/context_search.js?spec=svn11&r=11)
 * Modified by: viperfx07
 */
 
 var _linkFounds = [];
 var selectedText = '';
-var realIcon16 = 'url(http://debridmax.com/favicon.ico)';
+var buttonIcon = 'url(http://debridmax.com/favicon.ico)';
 
-var breakitOff = new Array(
+var hostFilter = new Array(
     /(http|https):\/\/(\w+\.)?rapidshare\.com\/(files\/[^\"\r\n< ]+|#!download[^\"\r\n< ]+)/g,
     /http:\/\/(\w+\.)?megaupload\.com\/([a-zA-Z]+\/)?\?[a-zA-Z]=[0-9a-zA-Z]{8}/g,
     /http:\/\/(\w+\.)?megavideo\.com\/([a-zA-Z]+\/)?\?[a-zA-Z]=[0-9a-zA-Z]{8}/g,
@@ -17,8 +17,21 @@ var breakitOff = new Array(
     /http:\/\/(\w+\.)?uploading\.com\/files\/[a-zA-Z0-9]+\//g,    
     /http:\/\/(\w+\.)?filesonic\.(com|fr|de|it|net|org)\/file\/[^\"\r\n< ]+/g,
     /http:\/\/(\w+\.)?fileserve\.com\/file\/[^\"\r\n< ]+/g,
-	/http:\/\/(\w+\.)?videobb.com\/video\/[^\"\r\n< ]+/g
+	/http:\/\/(\w+\.)?videobb.com\/video\/[^\"\r\n< ]+/g,
+	/http:\/\/dl\.free\.fr\/[^\"\r\n< ]+/g
 	);
+	
+function checkMultiLink(link) {
+    if(!link) return 0;
+    var result = new Array();
+    var i;
+    for(i=0;i<hostFilter.length;i++) {
+            var res = link.match(hostFilter[i]);
+            if(res)
+                result = result.concat(res);
+    }
+	return (result.length) ? result : 0;
+}
 
 var ContextButton = function()
 {
@@ -40,7 +53,7 @@ var ContextButton = function()
 			cursor = 'pointer';
 			border = 'none';
 			display = 'none';
-			background = realIcon16 + ' no-repeat';
+			background = buttonIcon + ' no-repeat';
 			zIndex = 4294967296;
 			opacity = 1;
 		}
@@ -133,9 +146,9 @@ function viewPartialSourceForSelection(){
 			if (range) {
 				var div = range.startContainer.ownerDocument.createElement('div');
 				div.appendChild(range.cloneContents());
-				return(div.innerHTML); // html source
+				return(div.innerHTML);
 			}
-			return selection.toString(); // text
+			return selection.toString();
 		}
 	}
 }
@@ -246,18 +259,4 @@ function updateContextButton(eventArgs, checkMouseStatus)
 function trim(string)
 {
 	return string.replace(/^\s+|\s+$/g, '');
-}
-
-
-//change this
-function checkMultiLink(link) {
-    if(!link) return 0;
-    var result = new Array();
-    var i;
-    for(i=0;i<breakitOff.length;i++) {
-            var res = link.match(breakitOff[i]);
-            if(res)
-                result = result.concat(res);
-    }
-	return (result.length) ? result : 0;
 }

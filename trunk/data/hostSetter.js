@@ -13,7 +13,8 @@ var hostFilter = new Array(
     /http:\/\/(\w+\.)?uploading\.com\/files\/[a-zA-Z0-9]+\//g,    
     /http:\/\/(\w+\.)?filesonic\.(com|fr|de|it|net|org)\/file\/[^\"\r\n< ]+/g,
     /http:\/\/(\w+\.)?fileserve\.com\/file\/[^\"\r\n< ]+/g,
-	/http:\/\/(\w+\.)?videobb.com\/video\/[^\"\r\n< ]+/g
+	/http:\/\/(\w+\.)?videobb.com\/video\/[^\"\r\n< ]+/g,
+	/http:\/\/dl\.free\.fr\/[^\"\r\n< ]+/g
 	);
 
 //filter link for respective host
@@ -40,10 +41,8 @@ function setHost(theString)
 
 	if(hostFilterIndex==0)
 		host=RS_DM;
-	else if(hostFilterIndex>0 && hostFilterIndex<9) 
+	else
 		host=MD_DM;
-	else if(hostFilterIndex ==9) // 9 because it will be static
-		host=VBB_DM;
 	
 	return host;
 }

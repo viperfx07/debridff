@@ -1,3 +1,16 @@
+v0.3
+----
+- Fixed compatibility with Debridmax's new version
+- Changed logo.png
+- Modified context_button.js a bit
+- Modified hostSetter.js (fix the hostFilter and setHost function)
+- TODO add context menu for sending the link to submission window
+- Added link counter to submission window
+- TODO modify generator.js
+- TODO modifiy genlink.js
+- TODO add auto-login if using password manager
+
+
 v0.2.4
 ------
 - Better filter codes for hostSetter and pageModder
