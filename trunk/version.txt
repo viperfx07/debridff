@@ -6,9 +6,9 @@ v0.3
 - Modified hostSetter.js (fix the hostFilter and setHost function)
 - Added context menu for sending the link to submission window
 - Added link counter to submission window
-- TODO modify generator.js
-- TODO modifiy genlink.js
-- TODO add auto-login if using password manager
+- Added auto-login if using password manager
+- TODO Fixed auto-login for contextmenus
+- TODO Test if login details saved are wrong
 
 
 v0.2.4

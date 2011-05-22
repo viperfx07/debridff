@@ -5,6 +5,16 @@ var pagemods = require("page-mod");
 var panels = require("panel");
 var contextMenu = require("context-menu");
 
+ss.storage.genlink_href = []; //href
+ss.storage.genlink_text = []; //inner text
+
+//clear storage for saved login details
+ss.storage.savedUsername = ss.storage.savedPassword = "";
+
+//to set the saved_login_details when the extension starts.
+getSavedLoginDetails();
+
+//set cachedLinks to null when the addon's started
 ss.storage.cachedLinks="";
 
 //Declaring workers
@@ -21,7 +31,7 @@ function showDefaultIconOnWidget(){
 }
 
 //submission window message handler for its page-mod
-function subWindowMsgHandler(msg) {
+function subWindowMsgHandler(msg){
 	if(msg=="finish_loading")
 		showDefaultIconOnWidget();
 	else if(msg=="loading")
@@ -34,26 +44,44 @@ function subWindowMsgHandler(msg) {
 		ss.storage.cachedLinks="";
 	else
 		ss.storage.parsedJSONfromSubWin = JSON.parse(msg);
-} 
+}
 
 //generated link window message handler for its page-mod
 function genLinkMsgHandler(msg){
-	var m = JSON.parse(msg);
-	
-	if(m.type=="ready")
-		genLinkWorker.postMessage(ss.storage.parsedJSONfromSubWin);
+	if(msg.type=="ready")
+		genLinkWorker.postMessage({'linksarray':ss.storage.genlink_href, 'textInLink':ss.storage.genlink_text});
+	else if(msg.type=="clearLinksStorage")
+		clearLinksStorage();
 	else
-		require("clipboard").set(m.content);
+		require("clipboard").set(msg.content);
 }
 
 //content message handler for its page-mod
 function contentMsgHandler(msg){
-	if(msg=="loading")
+    
+	if(msg.type=="loading")
 		showLoaderIconOnWidget();
-	else if(msg=="finish_loading")
+	else if(msg.type=="finish_loading")
 		showDefaultIconOnWidget();
+	else if(msg.type=="saveResult")
+		storeLinksInStorage(msg.link,msg.text);
 	else
-		ss.storage.parsedJSONfromSubWin = JSON.parse(msg);
+		return;
+}
+
+function clearLinksStorage()
+{
+	console.log("clear links storage");
+	ss.storage.genlink_href=[];
+	ss.storage.genlink_text=[];
+}
+
+//store generated links in storage
+function storeLinksInStorage(link,text)
+{
+	console.log("link stored");
+	ss.storage.genlink_href.push(link);
+	ss.storage.genlink_text.push(text);
 }
 
 //send the link to submission window
@@ -64,13 +92,43 @@ function sendLinkToSubWin(links)
 	else
 		ss.storage.cachedLinks = links + "\r\n";
 	
-	debridWidget.panel.postMessage("openSubWin");
+	debridWidget.panel.postMessage({'type' : "openSubWin"});
 }
+
+function getSavedLoginDetails()
+{
+	require("passwords").search({
+		onComplete: function onComplete(credentials) {
+			credentials.forEach(function(credential,isLoginDetailsSaved) {
+				if(credential.url== "http://www.debridmax.com" || credential.url == "http://debridmax.com")
+				{
+					console.log("got credential");
+					ss.storage.savedUsername = credential.username;
+					ss.storage.savedPassword = credential.password;
+					ss.storage.hasSavedDetails = true;
+				}
+				else
+				{
+					ss.storage.savedUsername = ss.storage.savedPassword = "";
+					ss.storage.hasSavedDetails = false;
+				}	
+			});
+			
+			}
+		});
+}
+
 
 //to make sure that the subwin always checks the cachedLinks when it's opened and the worker's attached.
 function postLinksToSubWin(){
 	if(ss.storage.cachedLinks)
-		subWinWorker.postMessage(ss.storage.cachedLinks);
+	{
+		var msg = {
+			'type' : 'cached_links',
+			'content' : ss.storage.cachedLinks
+		};
+		subWinWorker.postMessage(JSON.stringify(msg));
+	}
 }
 
 //Page-mod object for submissionWindow.html
@@ -82,6 +140,10 @@ pagemods.PageMod({
 	onAttach: function onAttach(worker, mod){
 		worker.on('message', subWindowMsgHandler);
 		subWinWorker = worker;
+		this.contentScript += 
+		" var savedPassword = '" + ss.storage.savedPassword + "'; " + 
+		" var savedUsername = '" + ss.storage.savedUsername + "'; " +
+		" var hasSavedDetails = '" + ss.storage.hasSavedDetails + "'; ";
 		postLinksToSubWin();
 	}
 });
@@ -104,10 +166,14 @@ pagemods.PageMod({
   contentScriptWhen: 'ready',
   contentScriptFile: [data.url("generator.js"), data.url("hostSetter.js"),
 					 data.url("pageModder.js"),data.url("loginChecker.js"),data.url("context_button.js"),data.url("htmlparser.js")],
-  contentScript: 'var generatedLinkWin="' + data.url("generated_link.html") + '";',
+  contentScript: 'var generatedLinkWin="' + data.url("generated_link.html") + '"; ',
   onAttach: function onAttach(worker, mod) {
     worker.on('message', contentMsgHandler);
     contentWorker = worker;
+	this.contentScript += 
+		" var savedPassword = '" + ss.storage.savedPassword + "'; " + 
+		" var savedUsername = '" + ss.storage.savedUsername + "'; " +
+		" var hasSavedDetails = '" + ss.storage.hasSavedDetails + "'; ";
   }
 });
 
@@ -122,7 +188,10 @@ var debridWidget = require("widget").Widget({
 		width : 200,
 		contentURL: data.url("popup.html"),
 		contentScriptFile: [data.url("jquery.js"),data.url("popup.js"),data.url("hostSetter.js"),data.url("loginChecker.js"),data.url("htmlparser.js")],
-		onShow: function(){this.postMessage("load");},
+		onShow: function(){
+			getSavedLoginDetails();
+			this.postMessage({'type':'saved_login_details', 'username' : ss.storage.savedUsername, 'password':ss.storage.savedPassword});
+		},
 		onMessage: function(m){
 			switch (m)
 			{
@@ -139,6 +208,27 @@ var debridWidget = require("widget").Widget({
 	})
 });
 
+function onMessageContextMenu(m) //callback for selectionContextMenu and linkContextMenu 
+{
+	switch (m.type)
+	{
+		case "loading" :
+			showLoaderIconOnWidget();
+			break;
+		case "finish_loading" :
+			showDefaultIconOnWidget();
+			break;
+		case "saveResult" :
+			storeLinksInStorage(m.link,m.text);
+			break;
+		case "send_link_to_subwin" :
+			sendLinkToSubWin(m.content);
+			break;
+		default:
+			return;
+	}
+}
+
 
 //Selection context menu
 var selectionContextMenu = contextMenu.Menu({
@@ -146,25 +236,11 @@ var selectionContextMenu = contextMenu.Menu({
 	context: contextMenu.SelectionContext(),
 	contentScriptWhen: 'ready',
 	contentScriptFile: [data.url("generator.js"), data.url("hostSetter.js"),data.url("selectioncontextMenu.js"),data.url("loginChecker.js"),data.url("htmlparser.js")],
-	contentScript: 'var generatedLinkWin="' + data.url("generated_link.html") + '";',
-	onMessage: function(m){
-		switch (m)
-		{
-			case "loading" :
-				showLoaderIconOnWidget();
-				break;
-			case "finish_loading" :
-				showDefaultIconOnWidget();
-				break;
-			default:
-				var msg = JSON.parse(m);
-				if(msg.type == "send_link_to_subwin")
-					sendLinkToSubWin(msg.content);
-				else
-					ss.storage.parsedJSONfromSubWin = JSON.parse(m);
-				return;
-		}
-	},
+	contentScript: 
+	' var savedPassword = "' + ss.storage.savedPassword + '"; ' + 
+	' var savedUsername = "' + ss.storage.savedUsername + '"; ' +
+	' var hasSavedDetails = ' + ss.storage.hasSavedDetails + ';',
+	onMessage: onMessageContextMenu,
 	items: [
 	contextMenu.Item({ label: "Download selected", data: "ddl" }),
     contextMenu.Item({ label: "Send to submission window", data: "subwin" })
@@ -177,25 +253,11 @@ var linkContextMenu = contextMenu.Menu({
 	context: contextMenu.SelectorContext("a[href]"),
 	contentScriptWhen: 'ready',
 	contentScriptFile: [data.url("generator.js"), data.url("hostSetter.js"),data.url("linkcontextMenu.js"),data.url("loginChecker.js"),data.url("htmlparser.js")],
-	contentScript: 'var generatedLinkWin="' + data.url("generated_link.html") + '";',
-	onMessage: function(m){
-		switch (m)
-		{
-			case "loading" :
-				showLoaderIconOnWidget();
-				break;
-			case "finish_loading" :
-				showDefaultIconOnWidget();
-				break;
-			default:
-				var msg = JSON.parse(m);
-				if(msg.type == "send_link_to_subwin")
-					sendLinkToSubWin(msg.content);
-				else
-					ss.storage.parsedJSONfromSubWin = JSON.parse(m);
-				return;
-		}
-	},
+	contentScript: 
+	' var savedPassword = "' + ss.storage.savedPassword + '"; ' + 
+	' var savedUsername = "' + ss.storage.savedUsername + '"; ' +
+	' var hasSavedDetails = ' + ss.storage.hasSavedDetails + ';',
+	onMessage: onMessageContextMenu,
 	items: [
     contextMenu.Item({ label: "Download link", data: "ddl" }),
     contextMenu.Item({ label: "Send to submission window", data: "subwin" })

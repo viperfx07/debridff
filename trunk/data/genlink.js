@@ -3,17 +3,15 @@ var links="";
 onMessage = function onMessage(msg)
 {
 	//Temporary variables
-	let anchorlinks="";
-	let startIndex = 0;
-	let endIndex;
-	
-	//From message
-	let totallinks = msg.index;
-	let linksarray = msg.linksarray;
-	let textInLink = msg.textInLink;
+	var anchorlinks="";
+	var startIndex = 0;
 		
-	endIndex = startIndex + totallinks - 1
-			
+	//From message
+	var linksarray = msg.linksarray;
+	var textInLink = msg.textInLink;
+		
+	var endIndex = startIndex + linksarray.length - 1
+	
 	for(i=startIndex;i<=endIndex;i++)
 	{
 		if(i==endIndex)
@@ -25,20 +23,17 @@ onMessage = function onMessage(msg)
 	
 	$("#anchorlinks").append(anchorlinks);
 	$("#loader").hide();
+	postMessage({'type':"clearLinksStorage"});
 }
 
 $(document).ready(function(){
-	var message = {'type' : '', 'content' : ''};
-	message.type='ready';
-	message.content='ready';
-	postMessage(JSON.stringify(message)); //ready to get the generated links.
+	
+	postMessage({'type':'ready'}); //ready to get the generated links.
 		
 	$("#loader").show(); //show load.gif
 	
 	$("#copy").click(function(){ //copy to clipboard
-		message.type='copy';
-		message.content = links;
-		postMessage(JSON.stringify(message));
+		postMessage({'type':'copy', 'content':links});
 		alert("Link(s) copied");
 	});
 });

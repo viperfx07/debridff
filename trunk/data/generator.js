@@ -2,80 +2,50 @@
 //theURL: the filehost url string
 //linksControlValue: the filesharing links
 
-//Check DebridMax Login status
+//Link generator
 function generateBy(theURL,linksControlValue) {
-	postMessage("loading");
-	isLoginToDebridmax(function(isLoggedIn,login_details){
-		if(isLoggedIn)
-		{
-			var postdata="";
-			linksControlValue = (linksControlValue.toString()).trim();
-			
-			// DebridMax
-			switch(theURL)
-			{
-				case RS_DM :
-					postdata = "rslinks="+encodeURIComponent(linksControlValue);
-					break;
-				
-				case MD_DM :
-					var value = linksControlValue.split("&");
-					postdata = "hotlink="+encodeURIComponent(value[0])+"&pass="+encodeURIComponent(value[1]);
-					break;
-				
-				case VBB_DM:
-					postdata = "link="+encodeURIComponent(linksControlValue);
-					break;
-				
-				default:
-					alert("The link is invalid");
-					postMessage("finish_loading");
-					return;
-			}
-			
-			postdata += "&x=99&y=99"; // random numbers are allowed for x and y.
-			
+
+	postMessage({'type': "loading"});
+	
+	if(hasSavedDetails){
+		console.log("with loginWith" + savedUsername);
+		loginWithSavedDetails(savedUsername,savedPassword,function(isLoggedIn,login_details){
+			linkGenerator(linksControlValue,isLoggedIn);
+		});
+	}
+	else{
+		console.log("with isLogin");
+		isLoginToDebridmax(function(isLoggedIn,login_details){
+			linkGenerator(linksControlValue,isLoggedIn);
+		});
+	}
+}
+
+function linkGenerator(linksControlValue,isLoggedIn)
+{
+	if(isLoggedIn)
+	{
+		console.log("with logged in");
+		linksControlValue = (linksControlValue.toString()).trim();
+		var postdata;
+		var value = linksControlValue.split("&");
+		var the_links = (value[0].indexOf("\r")) ? value[0].split("\r\n") : value[0].split("\n");
+		var totallinks=0;
+		var index=0;
+		
+		for(var i=0; i<the_links.length; i++){
+			postdata = "hotlink="+encodeURIComponent(the_links[i])+"&pass="+encodeURIComponent(value[1])+"&t=2e";
+						
 			var xhr = new XMLHttpRequest();
 			xhr.onreadystatechange = function() {
-			  if (xhr.readyState == 4) {
+				if (xhr.readyState == 4) {
 				if (xhr.status == 200) {
-					var totallinks=0;
-					var index=0;
-					var linksarray = new Array(); //array for links
-					var textInLink = new Array(); //array for text in the link i.e. <a>text</a>
-					
-					var links_DOM = (HTMLParser(xhr.responseText)).querySelectorAll("span#blockblockB > p > a, div#debridmax > a");
+					console.log("200");			
+					var data= xhr.responseText;
+					var links_DOM = (HTMLParser(data)).querySelectorAll("a[href]");
 										
-					for (var i = 0; i < links_DOM.length; ++i) {
-						if(theURL == VBB_DM)
-							linksarray[i]= DM_ROOT + links_DOM[i].getAttribute("href");
-						else	
-							linksarray[i]= links_DOM[i].getAttribute("href");
-						
-						textInLink[i]= links_DOM[i].textContent;
-						index++;
-					}
-					
-					if(index>0)
-					{
-						var objJSON = {
-							"linksarray" : linksarray,
-							"textInLink" : textInLink,
-							"index" : index
-						}; //json to be passed to message handler in main.js
-						
-						var strJSON = JSON.stringify(objJSON);
-						
-						//generatedLinkWin variable is defined in the contentScript in main.js
-						//generatedLinkWin: the URL of generated_link.html
-						openGenWindow(generatedLinkWin);
-						postMessage(strJSON);
-					}
-					else
-					{
-						alert("DebridMax: " + "Error when generate. " + "\nPossible reasons: \n1. The link and/or password is invalid.\n2. The service is down.\n3. The premium accounts are out of order.");
-					}
-					postMessage("finish_loading");
+					if(data.indexOf("<b>Lien mort</b>")<0)
+						postMessage({'type':"saveResult", "link":links_DOM[0].getAttribute("href"), "text":links_DOM[0].innerHTML});
 				} 
 				else {
 					alert("DebridMax: Timeout. " + "\nPossible reasons: \n1. The link and/or password is invalid.\n2. The service is down.\n3. The premium accounts are out of order.");
@@ -83,17 +53,21 @@ function generateBy(theURL,linksControlValue) {
 			  }
 			}
 			
-			xhr.open("POST", theURL + "index.php", true);
-			xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+			xhr.open("POST", MD_DM + "p.php", false);
+			xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
 			xhr.send(postdata);
 		}
-		else
-		{
-			alert("You are not currently logged in to Debridmax. Please login before using the tool.");
-			postMessage("finish_loading");
-		}
-	});
+		
+		postMessage({'type': "finish_loading"});
+		openGenWindow(generatedLinkWin);
+	}
+	else
+	{
+		alert("You are not currently logged in to Debridmax. Please login before using the tool.");
+		postMessage({'type':"finish_loading"});
+	}
 }
+
 
 //Open the Submission Window
 function openGenWindow(url) {
