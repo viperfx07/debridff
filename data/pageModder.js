@@ -23,6 +23,7 @@ for(var i = 0; i< ewb.length; i++)
 
 function dsFunction(){
 	var selectedText = window.getSelection().toString();
+	console.log(encodeURIComponent(selectedText));
 	if(selectedText == "")
 		alert("Select the link first");
 	else

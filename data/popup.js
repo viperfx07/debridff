@@ -1,43 +1,49 @@
 onMessage= function onMessage(msg){	
-	
-	if(msg=="openSubWin")
+	if(msg.type=="openSubWin")
 		openSubWindow();
 	else
 	{
 		$(".debridff-loader").show(); //show loader
 		$("#dm_details").hide(); //hide details
 		$("#subWindowButton").hide(); //hide "Open Downloader" link
-		isLoginToDebridmax(function(isLoggedIn,login_details){
-			
-			var notloggedinMsg = "Note: You are not currently logged in to Debridmax. Please login before using the tool." + '(<a href="#" id="login">Login</a>)';
-			if(login_details.user=="" || login_details.user==notloggedinMsg)
-				login_details.user= notloggedinMsg;
-			else
-				$("#subWindowButton").show();
-					
-			//Write login, credit, and server load;
-			$("#dm_details").html(login_details.user);
-			$("#dm_details").show();
-					
-			//Add root server url prior to the img src (this for "OK" image)
-			$("img").each(function(){
-				$(this).attr({src:DM_ROOT + $(this).attr('src')});
-			});
-			
-			$(".debridff-loader").hide(); //show loader
-			//if subWindowButton is cliked
-			
-			$("#subWindowButton").click(openSubWindow);
 		
-			//If (Login) link is clicked
-			$("#login").click(function(){
-				postMessage('openLoginTab');
-				postMessage('hidePanel');
-			});
-		});
+		//if there's login details saved, login using those details
+		console.log("msg: " + msg.username + "type: " + msg.type);
+		if(msg.username)
+			loginWithSavedDetails(msg.username,msg.password,setPopupPage);
+		else	//if not check the login
+			isLoginToDebridmax(setPopupPage);
 	}
+}
+
+//Set login details and other properties for popup.html
+function setPopupPage(isLoggedIn,login_details){ 
+				
+	var notloggedinMsg = "Note: You are not currently logged in to Debridmax. Please login before using the tool." + '(<a href="#" id="login">Login</a>)';
+	if(login_details.user=="" || login_details.user==notloggedinMsg)
+		login_details.user= notloggedinMsg;
+	else
+		$("#subWindowButton").show();
+			
+	//Write login, credit, and server load;
+	$("#dm_details").html(login_details.user);
+	$("#dm_details").show();
+			
+	//Add root server url prior to the img src (this for "OK" image)
+	$("img").each(function(){
+		$(this).attr({src:DM_ROOT + $(this).attr('src')});
+	});
 	
+	$(".debridff-loader").hide(); //show loader
+	//if subWindowButton is clicked
 	
+	$("#subWindowButton").click(openSubWindow);
+
+	//If (Login) link is clicked
+	$("#login").click(function(){
+		postMessage('openLoginTab');
+		postMessage('hidePanel');
+	});
 }
 
 //Open the Submission Window

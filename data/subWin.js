@@ -1,7 +1,16 @@
 onMessage = function onMessage(msg){
-	$("#debridff-link").val(msg);
-	countLinks();
+	var m = JSON.parse(msg);
+	if(m.type=='cached_links')
+	{
+		$("#debridff-link").val(m);
+		countLinks();
+	}
+	else
+	{
+		//loginWithSavedDetails(m.username, m.password);
+	}
 }
+
 
 function countLinks(){
 
@@ -13,6 +22,7 @@ function countLinks(){
 		total = str.split("\n").length;
 		
 	$("#line_counter").html("You've entered " + total + " link(s)");
+	
 }
 
 //Event for debridff-generate button
