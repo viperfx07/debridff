@@ -1,3 +1,15 @@
+onMessage = function onMessage(msg){
+	console.log("onMsg: " + msg.type + msg.username + msg.password + msg.links);
+	switch(msg.type)
+	{
+		case 'generateLink':
+			generateBy({'username':msg.username,'password':msg.password},msg.links);
+			break;
+		default:
+			return;
+	}
+}
+
 //Add Download All and Download Selected buttons before td.code, pre, and blockquote element
 var ewb = document.querySelectorAll("td.code, pre, blockquote"); //ewb = element with buttons
 for(var i = 0; i< ewb.length; i++)
@@ -29,7 +41,7 @@ function dsFunction(){
 	else
 	{
 		var thehost = setHost(selectedText); //get the filehosting URL 
-		generateBy(thehost,selectedText); //generate the links
+		postMessage({'type':'generate','links' : selectedText}); //it was generateBy(thehost,selectedText);
 	}
 }
 
@@ -38,6 +50,5 @@ function daFunction()
 	var unparsedlinks = this.nextSibling.nextSibling.textContent;//get the text next to the button
 	var parsedlinks = unparsedlinks.split("\n\n");
 	var thelinks = ((parsedlinks.join("\n")).toString()).trim();
-	var thehost = setHost(thelinks);
-	generateBy(thehost,thelinks);
+	postMessage({'type':'generate','links' : thelinks}); //it was using generateBy
 }

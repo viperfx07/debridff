@@ -64,9 +64,9 @@ var ContextButton = function()
 		this._button.addEventListener('click',
 			function(e)
 			{
-				thelinks = ((_linkFounds.toString()).split(",")).join("\n");
-				var the_host  = setHost(_linkFounds[0]);
-				generateBy(the_host,thelinks);
+				thelinks = ((_linkFounds.toString()).split(",")).join("\r\n");
+				console.log("context button links: " + encodeURIComponent(thelinks));
+				postMessage({'type':'generate','links' : thelinks});
 				e.stopPropagation();
 			},
 			false);
