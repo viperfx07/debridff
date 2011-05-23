@@ -7,9 +7,7 @@ onMessage = function onMessage(msg){
 	}
 }
 
-
 function countLinks(){
-
 	var str = $.trim($("#debridff-link").val());
 	var total;
 	if(str.length == 0)
@@ -18,7 +16,6 @@ function countLinks(){
 		total = str.split("\n").length;
 		
 	$("#line_counter").html("You've entered " + total + " link(s)");
-	
 }
 
 //Event for debridff-generate button
@@ -33,7 +30,7 @@ $("#debridff-generate").click(function(){
 			links = links + "&" + "";
 	}
 	 //generate links
-	generateBy(host_url,links);
+	postMessage({'type':'generate','links' : links});
 	postMessage("clearLinkCache");
 });
 

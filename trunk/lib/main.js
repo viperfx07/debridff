@@ -11,18 +11,16 @@ ss.storage.genlink_text = []; //inner text
 //clear storage for saved login details
 ss.storage.savedUsername = ss.storage.savedPassword = "";
 
-//create context menus
-createContextMenus();
-
 //set cachedLinks to null when the addon's started
 ss.storage.cachedLinks="";
 
 //Declaring workers
 var contentWorker, subWinWorker, genLinkWorker;
 
-//get saved login details
-function getSavedLoginDetails()
+//passing on login details and instruction to generate links
+function generateLinks(worker,links)
 {
+	console.log("getSavedLogin");
 	require("passwords").search({
 		onComplete: function onComplete(credentials) {
 			credentials.forEach(function(credential) {
@@ -37,77 +35,17 @@ function getSavedLoginDetails()
 				{
 					ss.storage.savedUsername = ss.storage.savedPassword = "";
 					ss.storage.hasSavedDetails = false;
-				}	
-			});
-		}
-	});
-}
-
-
-//create context menus
-function createContextMenus()
-{
-	require("passwords").search({
-		onComplete: function onComplete(credentials) {
-			credentials.forEach(function(credential) {
-				if(credential.url== "http://www.debridmax.com" || credential.url == "http://debridmax.com")
-				{
-					console.log("got credential");
-					ss.storage.savedUsername = credential.username;
-					ss.storage.savedPassword = credential.password;
-					ss.storage.hasSavedDetails = true;
 				}
-				else
-				{
-					ss.storage.savedUsername = ss.storage.savedPassword = "";
-					ss.storage.hasSavedDetails = false;
-				}	
 			});
-			
-			//BEGIN Context menu - It is set here because it needs the saved login details when it starts
-			
-			//Selection context menu
-			var selectionContextMenu = contextMenu.Menu({
-				label: "Debridmax",
-				context: contextMenu.SelectionContext(),
-				contentScriptWhen: 'ready',
-				contentScriptFile: [data.url("generator.js"), data.url("hostSetter.js"),data.url("selectioncontextMenu.js"),data.url("loginChecker.js"),data.url("htmlparser.js")],
-				contentScript: 
-				' var generatedLinkWin="' + data.url("generated_link.html") + '"; ' +
-				' var savedPassword = "' + ss.storage.savedPassword + '"; ' + 
-				' var savedUsername = "' + ss.storage.savedUsername + '"; ' +
-				' var hasSavedDetails = ' + ss.storage.hasSavedDetails + ';',
-				onMessage: onMessageContextMenu,
-				items: [
-				contextMenu.Item({ label: "Download selected", data: "ddl" }),
-				contextMenu.Item({ label: "Send to submission window", data: "subwin" })
-				]
-			});
-
-			//Link context menu
-			var linkContextMenu = contextMenu.Menu({
-				label: "Debridmax",
-				context: contextMenu.SelectorContext("a[href]"),
-				contentScriptWhen: 'ready',
-				contentScriptFile: [data.url("generator.js"), data.url("hostSetter.js"),data.url("linkcontextMenu.js"),data.url("loginChecker.js"),data.url("htmlparser.js")],
-				contentScript: 
-				'var generatedLinkWin="' + data.url("generated_link.html") + '"; ' +
-				' var savedPassword = "' + ss.storage.savedPassword + '"; ' + 
-				' var savedUsername = "' + ss.storage.savedUsername + '"; ' +
-				' var hasSavedDetails = ' + ss.storage.hasSavedDetails + ';',
-				onMessage: onMessageContextMenu,
-				items: [
-				contextMenu.Item({ label: "Download link", data: "ddl" }),
-				contextMenu.Item({ label: "Send to submission window", data: "subwin" })
-				]
-			});
-			
-			//END Context menu
+			worker.postMessage({
+					'type': 'generateLink',
+					'username':ss.storage.savedUsername, 
+					'password':ss.storage.savedPassword,
+					'links': links
+				});	
 		}
 	});
 }
-
-
 
 //Show load.gif as widget icon
 function showLoaderIconOnWidget(){
@@ -147,13 +85,15 @@ function genLinkMsgHandler(msg){
 
 //content message handler for its page-mod
 function contentMsgHandler(msg){
-    
+    console.log("contentMsgHandler: " + msg.type);
 	if(msg.type=="loading")
 		showLoaderIconOnWidget();
 	else if(msg.type=="finish_loading")
 		showDefaultIconOnWidget();
 	else if(msg.type=="saveResult")
 		storeLinksInStorage(msg.link,msg.text);
+	else if(msg.type=="generate")
+		generateLinks(contentWorker,msg.links);
 	else
 		return;
 }
@@ -199,7 +139,7 @@ pagemods.PageMod({
 	contentScriptWhen: 'ready',
 	contentScriptFile: [data.url("jquery.js"), data.url("generator.js"), data.url("hostSetter.js"), data.url("subWin.js"), data.url("loginChecker.js"), data.url("htmlparser.js")],
 	contentScript: 'var generatedLinkWin="' + data.url("generated_link.html") + '";',
-	onAttach: function onAttach(worker, mod){
+	onAttach: function onAttach(worker){
 		worker.on('message', subWindowMsgHandler);
 		subWinWorker = worker;
 		this.contentScript += 
@@ -215,9 +155,10 @@ pagemods.PageMod({
 	include: data.url("generated_link.html"),
 	contentScriptWhen: 'ready',
 	contentScriptFile: [data.url("jquery.js"), data.url("genlink.js")],
-	onAttach: function onAttach(worker, mod){
+	onAttach: function onAttach(worker){
 		worker.on('message', genLinkMsgHandler);
 		genLinkWorker = worker;
+		
 	}
 });
 
@@ -228,8 +169,8 @@ pagemods.PageMod({
   contentScriptFile: [data.url("generator.js"), data.url("hostSetter.js"),
 					 data.url("pageModder.js"),data.url("loginChecker.js"),data.url("context_button.js"),data.url("htmlparser.js")],
   contentScript: 'var generatedLinkWin="' + data.url("generated_link.html") + '"; ',
-  onAttach: function onAttach(worker, mod) {
-    worker.on('message', contentMsgHandler);
+  onAttach: function onAttach(worker) {
+	worker.on('message', contentMsgHandler);
     contentWorker = worker;
 	this.contentScript += 
 		" var savedPassword = '" + ss.storage.savedPassword + "'; " + 
@@ -250,7 +191,6 @@ var debridWidget = require("widget").Widget({
 		contentURL: data.url("popup.html"),
 		contentScriptFile: [data.url("jquery.js"),data.url("popup.js"),data.url("hostSetter.js"),data.url("loginChecker.js"),data.url("htmlparser.js")],
 		onShow: function(){
-			//getSavedLoginDetails();
 			this.postMessage({'type':'saved_login_details', 'username' : ss.storage.savedUsername, 'password':ss.storage.savedPassword});
 		},
 		onMessage: function(m){
@@ -269,7 +209,46 @@ var debridWidget = require("widget").Widget({
 	})
 });
 
-function onMessageContextMenu(m) //callback for selectionContextMenu and linkContextMenu 
+//BEGIN Context menu - It is set here because it needs the saved login details when it starts
+			
+//Selection context menu
+var selectionContextMenu = contextMenu.Menu({
+	label: "Debridmax",
+	context: contextMenu.SelectionContext(),
+	contentScriptWhen: 'ready',
+	contentScriptFile: [data.url("generator.js"), data.url("hostSetter.js"),data.url("selectioncontextMenu.js"),data.url("loginChecker.js"),data.url("htmlparser.js")],
+	contentScript: 
+	' var generatedLinkWin="' + data.url("generated_link.html") + '"; ' +
+	' var savedPassword = "' + ss.storage.savedPassword + '"; ' + 
+	' var savedUsername = "' + ss.storage.savedUsername + '"; ' +
+	' var hasSavedDetails = ' + ss.storage.hasSavedDetails + ';',
+	onMessage: onMessageContextMenu,
+	items: [
+	contextMenu.Item({ label: "Download selected", data: "ddl" }),
+	contextMenu.Item({ label: "Send to submission window", data: "subwin" })
+	]
+});
+
+//Link context menu
+var linkContextMenu = contextMenu.Menu({
+	label: "Debridmax",
+	context: contextMenu.SelectorContext("a[href]"),
+	contentScriptWhen: 'ready',
+	contentScriptFile: [data.url("generator.js"), data.url("hostSetter.js"),data.url("linkcontextMenu.js"),data.url("loginChecker.js"),data.url("htmlparser.js")],
+	contentScript: 
+	'var generatedLinkWin="' + data.url("generated_link.html") + '"; ' +
+	' var savedPassword = "' + ss.storage.savedPassword + '"; ' + 
+	' var savedUsername = "' + ss.storage.savedUsername + '"; ' +
+	' var hasSavedDetails = ' + ss.storage.hasSavedDetails + ';',
+	onMessage: onMessageContextMenu,
+	items: [
+	contextMenu.Item({ label: "Download link", data: "ddl" }),
+	contextMenu.Item({ label: "Send to submission window", data: "subwin" })
+	]
+});
+
+//callback for selectionContextMenu and linkContextMenu 
+function onMessageContextMenu(m) 
 {
 	console.log(m.type);
 	switch (m.type)
@@ -284,10 +263,14 @@ function onMessageContextMenu(m) //callback for selectionContextMenu and linkCon
 			storeLinksInStorage(m.link,m.text);
 			break;
 		case "send_link_to_subwin" :
-			console.log(m.content);
 			sendLinkToSubWin(m.content);
+			break;
+		case "generate" :
+			generateLinks(contentWorker,m.links);
 			break;
 		default:
 			return;
 	}
 }
+		
+//END Context menu
