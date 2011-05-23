@@ -1,13 +1,9 @@
 onMessage = function onMessage(msg){
-	var m = JSON.parse(msg);
-	if(m.type=='cached_links')
+	console.log(msg.type);
+	if(msg.type=='cached_links')
 	{
-		$("#debridff-link").val(m);
+		$("#debridff-link").val(msg.content);
 		countLinks();
-	}
-	else
-	{
-		//loginWithSavedDetails(m.username, m.password);
 	}
 }
 

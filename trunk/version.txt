@@ -7,9 +7,7 @@ v0.3
 - Added context menu for sending the link to submission window
 - Added link counter to submission window
 - Added auto-login if using password manager
-- TODO Fixed auto-login for contextmenus
-- TODO Test if login details saved are wrong
-
+- TODO Test if login details saved are wrong, and always check whether loginDetails saved or not.
 
 v0.2.4
 ------

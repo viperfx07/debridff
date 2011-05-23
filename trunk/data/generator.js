@@ -2,13 +2,41 @@
 //theURL: the filehost url string
 //linksControlValue: the filesharing links
 
+function relogin(linksControlValue){
+	console.log(savedUsername);
+	loginWithSavedDetails(savedUsername,savedPassword,function(isLoggedIn,login_details){
+		console.log("loginWithSaved");
+		linkGenerator(linksControlValue,isLoggedIn);
+	});
+}
+
+
 //Link generator
-function generateBy(theURL,linksControlValue) {
+function generateBy(theURL,linksControlValue, savedLoginDetails) {
 
 	postMessage({'type': "loading"});
 	
+	//this code below needs the third parameter which is the savedLoginDetails.
+	isLoginToDebridmax(function(isLoggedIn,login_details){
+		if(!isLoggedIn){ //if not logged in
+			console.log("notLoggedIn generateBy");
+			if(savedLoginDetails.username && savedLoginDetails.password)
+			{
+				loginWithSavedDetails(savedLoginDetails.username,savedLoginDetails.password,function(isLoggedIn,login_details){	
+					linkGenerator(linksControlValue,isLoggedIn);
+				});
+			}
+			else
+				linkGenerator(linksControlValue,isLoggedIn);
+		}
+		else
+			linkGenerator(linksControlValue,isLoggedIn);
+	});
+	
+	//The correct codes but it's not perfect
+	/* 
 	if(hasSavedDetails){
-		console.log("with loginWith" + savedUsername);
+		console.log("with loginWith " + savedUsername);
 		loginWithSavedDetails(savedUsername,savedPassword,function(isLoggedIn,login_details){
 			linkGenerator(linksControlValue,isLoggedIn);
 		});
@@ -19,13 +47,14 @@ function generateBy(theURL,linksControlValue) {
 			linkGenerator(linksControlValue,isLoggedIn);
 		});
 	}
+	*/
 }
 
 function linkGenerator(linksControlValue,isLoggedIn)
 {
 	if(isLoggedIn)
 	{
-		console.log("with logged in");
+		console.log("logged in");
 		linksControlValue = (linksControlValue.toString()).trim();
 		var postdata;
 		var value = linksControlValue.split("&");

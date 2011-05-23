@@ -11,14 +11,103 @@ ss.storage.genlink_text = []; //inner text
 //clear storage for saved login details
 ss.storage.savedUsername = ss.storage.savedPassword = "";
 
-//to set the saved_login_details when the extension starts.
-getSavedLoginDetails();
+//create context menus
+createContextMenus();
 
 //set cachedLinks to null when the addon's started
 ss.storage.cachedLinks="";
 
 //Declaring workers
 var contentWorker, subWinWorker, genLinkWorker;
+
+//get saved login details
+function getSavedLoginDetails()
+{
+	require("passwords").search({
+		onComplete: function onComplete(credentials) {
+			credentials.forEach(function(credential) {
+				if(credential.url== "http://www.debridmax.com" || credential.url == "http://debridmax.com")
+				{
+					console.log("got credential");
+					ss.storage.savedUsername = credential.username;
+					ss.storage.savedPassword = credential.password;
+					ss.storage.hasSavedDetails = true;
+				}
+				else
+				{
+					ss.storage.savedUsername = ss.storage.savedPassword = "";
+					ss.storage.hasSavedDetails = false;
+				}	
+			});
+		}
+	});
+}
+
+
+//create context menus
+function createContextMenus()
+{
+	require("passwords").search({
+		onComplete: function onComplete(credentials) {
+			credentials.forEach(function(credential) {
+				if(credential.url== "http://www.debridmax.com" || credential.url == "http://debridmax.com")
+				{
+					console.log("got credential");
+					ss.storage.savedUsername = credential.username;
+					ss.storage.savedPassword = credential.password;
+					ss.storage.hasSavedDetails = true;
+				}
+				else
+				{
+					ss.storage.savedUsername = ss.storage.savedPassword = "";
+					ss.storage.hasSavedDetails = false;
+				}	
+			});
+			
+			//BEGIN Context menu - It is set here because it needs the saved login details when it starts
+			
+			//Selection context menu
+			var selectionContextMenu = contextMenu.Menu({
+				label: "Debridmax",
+				context: contextMenu.SelectionContext(),
+				contentScriptWhen: 'ready',
+				contentScriptFile: [data.url("generator.js"), data.url("hostSetter.js"),data.url("selectioncontextMenu.js"),data.url("loginChecker.js"),data.url("htmlparser.js")],
+				contentScript: 
+				' var generatedLinkWin="' + data.url("generated_link.html") + '"; ' +
+				' var savedPassword = "' + ss.storage.savedPassword + '"; ' + 
+				' var savedUsername = "' + ss.storage.savedUsername + '"; ' +
+				' var hasSavedDetails = ' + ss.storage.hasSavedDetails + ';',
+				onMessage: onMessageContextMenu,
+				items: [
+				contextMenu.Item({ label: "Download selected", data: "ddl" }),
+				contextMenu.Item({ label: "Send to submission window", data: "subwin" })
+				]
+			});
+
+			//Link context menu
+			var linkContextMenu = contextMenu.Menu({
+				label: "Debridmax",
+				context: contextMenu.SelectorContext("a[href]"),
+				contentScriptWhen: 'ready',
+				contentScriptFile: [data.url("generator.js"), data.url("hostSetter.js"),data.url("linkcontextMenu.js"),data.url("loginChecker.js"),data.url("htmlparser.js")],
+				contentScript: 
+				'var generatedLinkWin="' + data.url("generated_link.html") + '"; ' +
+				' var savedPassword = "' + ss.storage.savedPassword + '"; ' + 
+				' var savedUsername = "' + ss.storage.savedUsername + '"; ' +
+				' var hasSavedDetails = ' + ss.storage.hasSavedDetails + ';',
+				onMessage: onMessageContextMenu,
+				items: [
+				contextMenu.Item({ label: "Download link", data: "ddl" }),
+				contextMenu.Item({ label: "Send to submission window", data: "subwin" })
+				]
+			});
+			
+			//END Context menu
+		}
+	});
+}
+
+
 
 //Show load.gif as widget icon
 function showLoaderIconOnWidget(){
@@ -95,40 +184,13 @@ function sendLinkToSubWin(links)
 	debridWidget.panel.postMessage({'type' : "openSubWin"});
 }
 
-function getSavedLoginDetails()
-{
-	require("passwords").search({
-		onComplete: function onComplete(credentials) {
-			credentials.forEach(function(credential,isLoginDetailsSaved) {
-				if(credential.url== "http://www.debridmax.com" || credential.url == "http://debridmax.com")
-				{
-					console.log("got credential");
-					ss.storage.savedUsername = credential.username;
-					ss.storage.savedPassword = credential.password;
-					ss.storage.hasSavedDetails = true;
-				}
-				else
-				{
-					ss.storage.savedUsername = ss.storage.savedPassword = "";
-					ss.storage.hasSavedDetails = false;
-				}	
-			});
-			
-			}
-		});
-}
-
 
 //to make sure that the subwin always checks the cachedLinks when it's opened and the worker's attached.
 function postLinksToSubWin(){
 	if(ss.storage.cachedLinks)
-	{
-		var msg = {
-			'type' : 'cached_links',
-			'content' : ss.storage.cachedLinks
-		};
-		subWinWorker.postMessage(JSON.stringify(msg));
-	}
+		subWinWorker.postMessage({'type' : 'cached_links','content' : ss.storage.cachedLinks});
+	else
+		return;
 }
 
 //Page-mod object for submissionWindow.html
@@ -159,7 +221,6 @@ pagemods.PageMod({
 	}
 });
 
-
 //Page-mod object for websites
 pagemods.PageMod({
   include: "*",
@@ -189,7 +250,7 @@ var debridWidget = require("widget").Widget({
 		contentURL: data.url("popup.html"),
 		contentScriptFile: [data.url("jquery.js"),data.url("popup.js"),data.url("hostSetter.js"),data.url("loginChecker.js"),data.url("htmlparser.js")],
 		onShow: function(){
-			getSavedLoginDetails();
+			//getSavedLoginDetails();
 			this.postMessage({'type':'saved_login_details', 'username' : ss.storage.savedUsername, 'password':ss.storage.savedPassword});
 		},
 		onMessage: function(m){
@@ -210,6 +271,7 @@ var debridWidget = require("widget").Widget({
 
 function onMessageContextMenu(m) //callback for selectionContextMenu and linkContextMenu 
 {
+	console.log(m.type);
 	switch (m.type)
 	{
 		case "loading" :
@@ -222,44 +284,10 @@ function onMessageContextMenu(m) //callback for selectionContextMenu and linkCon
 			storeLinksInStorage(m.link,m.text);
 			break;
 		case "send_link_to_subwin" :
+			console.log(m.content);
 			sendLinkToSubWin(m.content);
 			break;
 		default:
 			return;
 	}
 }
-
-
-//Selection context menu
-var selectionContextMenu = contextMenu.Menu({
-	label: "Debridmax",
-	context: contextMenu.SelectionContext(),
-	contentScriptWhen: 'ready',
-	contentScriptFile: [data.url("generator.js"), data.url("hostSetter.js"),data.url("selectioncontextMenu.js"),data.url("loginChecker.js"),data.url("htmlparser.js")],
-	contentScript: 
-	' var savedPassword = "' + ss.storage.savedPassword + '"; ' + 
-	' var savedUsername = "' + ss.storage.savedUsername + '"; ' +
-	' var hasSavedDetails = ' + ss.storage.hasSavedDetails + ';',
-	onMessage: onMessageContextMenu,
-	items: [
-	contextMenu.Item({ label: "Download selected", data: "ddl" }),
-    contextMenu.Item({ label: "Send to submission window", data: "subwin" })
-	]
-});
-
-//Link context menu
-var linkContextMenu = contextMenu.Menu({
-	label: "Debridmax",
-	context: contextMenu.SelectorContext("a[href]"),
-	contentScriptWhen: 'ready',
-	contentScriptFile: [data.url("generator.js"), data.url("hostSetter.js"),data.url("linkcontextMenu.js"),data.url("loginChecker.js"),data.url("htmlparser.js")],
-	contentScript: 
-	' var savedPassword = "' + ss.storage.savedPassword + '"; ' + 
-	' var savedUsername = "' + ss.storage.savedUsername + '"; ' +
-	' var hasSavedDetails = ' + ss.storage.hasSavedDetails + ';',
-	onMessage: onMessageContextMenu,
-	items: [
-    contextMenu.Item({ label: "Download link", data: "ddl" }),
-    contextMenu.Item({ label: "Send to submission window", data: "subwin" })
-    ]
-});
