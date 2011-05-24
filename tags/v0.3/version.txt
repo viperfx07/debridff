@@ -1,0 +1,47 @@
+v0.3
+----
+- Fixed compatibility with Debridmax's new version
+- Changed logo.png
+- Modified context_button.js a bit
+- Modified hostSetter.js (fix the hostFilter and setHost function)
+- Added context menu for sending the link to submission window
+- Added link counter to submission window
+- Added auto-login if using password manager
+- Modified generated_link.html and subwin.html to have better performance (html n css)
+
+v0.2.4
+------
+- Better filter codes for hostSetter and pageModder
+- Fixed videobb (due to Debridmax's bad programming style)
+
+v0.2.3.1
+--------
+- Changed sync requests to async requests.
+
+v0.2.3:
+-------
+- Fixed login_details to not show the quota and limit anymore
+- Fixed the validation for any links that are not supported
+- Added link context menu
+- Modified the widget width
+
+v0.2.2:
+-------
+- No changes, just tried to upload a new version for AMO site
+
+v0.2.1:
+-------
+- Changed the submissionWindow.html to use show loader on widget instead of the submission page.
+- Fixed the generated_link.html and submissionWindow.html so it's w3c valid.
+
+v0.2:
+-----
+- Fixed scripts that use jQuery which causes a conflict with another jQuery on a webpage.
+
+v0.1:
+----
+- Ported from Chrome extension
+- No localization
+- No option page
+- No auto-generate
+- context button
