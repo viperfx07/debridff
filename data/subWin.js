@@ -5,6 +5,10 @@ onMessage = function onMessage(msg){
 		$("#debridff-link").val(msg.content);
 		countLinks();
 	}
+	else if(msg.type=="generateLink")
+	{
+		generateBy({'username':msg.username,'password':msg.password},msg.links);
+	}
 }
 
 function countLinks(){
@@ -30,8 +34,9 @@ $("#debridff-generate").click(function(){
 			links = links + "&" + "";
 	}
 	 //generate links
+	console.log("links: "+links);
 	postMessage({'type':'generate','links' : links});
-	postMessage("clearLinkCache");
+	postMessage({'type':"clearLinkCache"});
 });
 
 $(document).ready(function(){
@@ -41,6 +46,6 @@ $(document).ready(function(){
 	countLinks();
 	
 	$("img#debridff-sw-loader").hide(); //hide loader
-	$("a#donatelink").click(function(){ postMessage("open_donate");});
-	$("a#logolink").click(function(){ postMessage("open_debrid");});
+	$("a#donatelink").click(function(){ postMessage({'type':"open_donate"});});
+	$("a#logolink").click(function(){ postMessage({'type':"open_debrid"});});
 });

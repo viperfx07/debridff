@@ -7,10 +7,7 @@ v0.3
 - Added context menu for sending the link to submission window
 - Added link counter to submission window
 - Added auto-login if using password manager
-- TODO added the auto-login for subwin
-- TODO favico, donate buttons,
-- TODO changed css generated_link
-
+- Modified generated_link.html and subwin.html to have better performance (html n css)
 
 v0.2.4
 ------
