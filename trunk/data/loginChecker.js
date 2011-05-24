@@ -26,7 +26,7 @@ function isLoginToDebridmax(callback) {
 	}
 	var timestamp = new Date();
 	var times = timestamp.getTime().toString();
-	xhr.open("GET", "http://www.debridmax.com/multimax/?" + times, false);
+	xhr.open("GET", "http://www.debridmax.com/en/multimax/?" + times, false);
 	xhr.send("");
 }
 
@@ -59,7 +59,7 @@ function loginWithSavedDetails(username,password,callback)
 	}
 	
 	var postdata = "usr_email=" + username + "&pwd=" + password + "&remember=1&doLogin=Login";
-	xhr.open("POST", "http://www.debridmax.com/login.php", false);
+	xhr.open("POST", "http://www.debridmax.com/en/login.php", false);
 	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 	xhr.send(postdata);
 }

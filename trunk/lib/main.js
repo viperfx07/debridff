@@ -20,7 +20,6 @@ var contentWorker, subWinWorker, genLinkWorker;
 //passing on login details and instruction to generate links
 function generateLinks(worker,links)
 {
-	console.log("getSavedLogin");
 	require("passwords").search({
 		onComplete: function onComplete(credentials) {
 			credentials.forEach(function(credential) {
@@ -59,18 +58,23 @@ function showDefaultIconOnWidget(){
 
 //submission window message handler for its page-mod
 function subWindowMsgHandler(msg){
-	if(msg=="finish_loading")
+	console.log("subWinMsgHandler msg.type: " + msg.type);
+	if(msg.type=="finish_loading")
 		showDefaultIconOnWidget();
-	else if(msg=="loading")
+	else if(msg.type=="loading")
 		showLoaderIconOnWidget();
-	else if(msg=="open_debrid")
+	else if(msg.type=="open_debrid")
 		require("windows").browserWindows.open("http://www.debridmax.com/en/");
-	else if(msg=="open_donate")
+	else if(msg.type=="open_donate")
 		require("windows").browserWindows.open("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VPJ5YQHBG7L36");
-	else if(msg=="clearLinkCache")	
+	else if(msg.type=="clearLinkCache")	
 		ss.storage.cachedLinks="";
+	else if(msg.type=="generate")
+		generateLinks(subWinWorker,msg.links);
+	else if(msg.type=="saveResult")
+		storeLinksInStorage(msg.link,msg.text);
 	else
-		ss.storage.parsedJSONfromSubWin = JSON.parse(msg);
+		return;
 }
 
 //generated link window message handler for its page-mod
@@ -108,7 +112,7 @@ function clearLinksStorage()
 //store generated links in storage
 function storeLinksInStorage(link,text)
 {
-	console.log("link stored");
+	console.log("link stored: " + link);
 	ss.storage.genlink_href.push(link);
 	ss.storage.genlink_text.push(text);
 }

@@ -8,7 +8,6 @@ onMessage= function onMessage(msg){
 		$("#subWindowButton").hide(); //hide "Open Downloader" link
 		
 		//if there's login details saved, login using those details
-		console.log("msg: " + msg.username + "type: " + msg.type);
 		if(msg.username)
 			loginWithSavedDetails(msg.username,msg.password,setPopupPage);
 		else	//if not check the login
