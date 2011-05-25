@@ -1,11 +1,11 @@
 /*
-* Source: adapted from Real-Debrid Plugin (which is also adapted from http://code.google.com/p/contextsearch/source/browse/trunk/context_search.js?spec=svn11&r=11)
+* Source: adapted from http://code.google.com/p/contextsearch/source/browse/trunk/context_search.js?spec=svn11&r=11
 * Modified by: viperfx07
 */
 
 var _linkFounds = [];
 var selectedText = '';
-var buttonIcon = 'url(http://debridmax.com/favicon.ico)';
+var buttonIcon = 'url(http://www.debridmax.com/favicon.ico)';
 
 var hostFilter = new Array(
     /(http|https):\/\/(\w+\.)?rapidshare\.com\/(files\/[^\"\r\n< ]+|#!download[^\"\r\n< ]+)/g,
@@ -66,7 +66,7 @@ var ContextButton = function()
 			{
 				thelinks = ((_linkFounds.toString()).split(",")).join("\r\n");
 				console.log("context button links: " + encodeURIComponent(thelinks));
-				postMessage({'type':'generate','links' : thelinks});
+				generateBy(thelinks);
 				e.stopPropagation();
 			},
 			false);

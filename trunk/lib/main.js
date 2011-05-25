@@ -5,11 +5,9 @@ var pagemods = require("page-mod");
 var panels = require("panel");
 var contextMenu = require("context-menu");
 
+//links to be shown on generated_link.html
 ss.storage.genlink_href = []; //href
 ss.storage.genlink_text = []; //inner text
-
-//clear storage for saved login details
-ss.storage.savedUsername = ss.storage.savedPassword = "";
 
 //set cachedLinks to null when the addon's started
 ss.storage.cachedLinks="";
@@ -17,50 +15,25 @@ ss.storage.cachedLinks="";
 //Declaring workers
 var contentWorker, subWinWorker, genLinkWorker;
 
-//passing on login details and instruction to generate links
-function generateLinks(worker,links)
-{
-	require("passwords").search({
-		onComplete: function onComplete(credentials) {
-			credentials.forEach(function(credential) {
-				if(credential.url== "http://www.debridmax.com" || credential.url == "http://debridmax.com")
-				{
-					console.log("got credential");
-					ss.storage.savedUsername = credential.username;
-					ss.storage.savedPassword = credential.password;
-					ss.storage.hasSavedDetails = true;
-				}
-				else
-				{
-					ss.storage.savedUsername = ss.storage.savedPassword = "";
-					ss.storage.hasSavedDetails = false;
-				}
-			});
-			worker.postMessage({
-					'type': 'generateLink',
-					'username':ss.storage.savedUsername, 
-					'password':ss.storage.savedPassword,
-					'links': links
-				});	
-		}
-	});
-}
-
 //Show load.gif as widget icon
 function showLoaderIconOnWidget(){
 	debridWidget.contentURL = data.url("load.gif");
 }
 
-//Show default icon (icon19.png) as widget icon
-function showDefaultIconOnWidget(){
+//Show default icon (icon19.png) as widget icon & decide to whether open generated_link.html or alert that there is no link generated
+function finishLoadingAction(worker){
 	debridWidget.contentURL = data.url("icon19.png");
+	if((ss.storage.genlink_href).length>0)
+		worker.postMessage({'type':'openGenWin'});
+	else
+		worker.postMessage({'type':'noLinkGeneratedAlert'});
 }
 
 //submission window message handler for its page-mod
 function subWindowMsgHandler(msg){
 	console.log("subWinMsgHandler msg.type: " + msg.type);
 	if(msg.type=="finish_loading")
-		showDefaultIconOnWidget();
+		finishLoadingAction(subWinWorker);
 	else if(msg.type=="loading")
 		showLoaderIconOnWidget();
 	else if(msg.type=="open_debrid")
@@ -69,8 +42,6 @@ function subWindowMsgHandler(msg){
 		require("windows").browserWindows.open("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VPJ5YQHBG7L36");
 	else if(msg.type=="clearLinkCache")	
 		ss.storage.cachedLinks="";
-	else if(msg.type=="generate")
-		generateLinks(subWinWorker,msg.links);
 	else if(msg.type=="saveResult")
 		storeLinksInStorage(msg.link,msg.text);
 	else
@@ -93,15 +64,14 @@ function contentMsgHandler(msg){
 	if(msg.type=="loading")
 		showLoaderIconOnWidget();
 	else if(msg.type=="finish_loading")
-		showDefaultIconOnWidget();
+		finishLoadingAction(contentWorker);
 	else if(msg.type=="saveResult")
 		storeLinksInStorage(msg.link,msg.text);
-	else if(msg.type=="generate")
-		generateLinks(contentWorker,msg.links);
 	else
 		return;
 }
 
+//clear storage for generated links
 function clearLinksStorage()
 {
 	console.log("clear links storage");
@@ -146,10 +116,6 @@ pagemods.PageMod({
 	onAttach: function onAttach(worker){
 		worker.on('message', subWindowMsgHandler);
 		subWinWorker = worker;
-		this.contentScript += 
-		" var savedPassword = '" + ss.storage.savedPassword + "'; " + 
-		" var savedUsername = '" + ss.storage.savedUsername + "'; " +
-		" var hasSavedDetails = '" + ss.storage.hasSavedDetails + "'; ";
 		postLinksToSubWin();
 	}
 });
@@ -162,7 +128,6 @@ pagemods.PageMod({
 	onAttach: function onAttach(worker){
 		worker.on('message', genLinkMsgHandler);
 		genLinkWorker = worker;
-		
 	}
 });
 
@@ -176,13 +141,8 @@ pagemods.PageMod({
   onAttach: function onAttach(worker) {
 	worker.on('message', contentMsgHandler);
     contentWorker = worker;
-	this.contentScript += 
-		" var savedPassword = '" + ss.storage.savedPassword + "'; " + 
-		" var savedUsername = '" + ss.storage.savedUsername + "'; " +
-		" var hasSavedDetails = '" + ss.storage.hasSavedDetails + "'; ";
   }
 });
-
 
 //Debridmax Widget
 var debridWidget = require("widget").Widget({
@@ -195,11 +155,10 @@ var debridWidget = require("widget").Widget({
 		contentURL: data.url("popup.html"),
 		contentScriptFile: [data.url("jquery.js"),data.url("popup.js"),data.url("hostSetter.js"),data.url("loginChecker.js"),data.url("htmlparser.js")],
 		onShow: function(){
-			this.postMessage({'type':'saved_login_details', 'username' : ss.storage.savedUsername, 'password':ss.storage.savedPassword});
+			this.postMessage({'type':'saved_login_details', 'username' : '', 'password':''});
 		},
 		onMessage: function(m){
-			switch (m)
-			{
+			switch (m){
 				case "hidePanel":
 					this.hide();
 					break;
@@ -222,10 +181,7 @@ var selectionContextMenu = contextMenu.Menu({
 	contentScriptWhen: 'ready',
 	contentScriptFile: [data.url("generator.js"), data.url("hostSetter.js"),data.url("selectioncontextMenu.js"),data.url("loginChecker.js"),data.url("htmlparser.js")],
 	contentScript: 
-	' var generatedLinkWin="' + data.url("generated_link.html") + '"; ' +
-	' var savedPassword = "' + ss.storage.savedPassword + '"; ' + 
-	' var savedUsername = "' + ss.storage.savedUsername + '"; ' +
-	' var hasSavedDetails = ' + ss.storage.hasSavedDetails + ';',
+	' var generatedLinkWin="' + data.url("generated_link.html") + '"; ',
 	onMessage: onMessageContextMenu,
 	items: [
 	contextMenu.Item({ label: "Download selected", data: "ddl" }),
@@ -240,10 +196,7 @@ var linkContextMenu = contextMenu.Menu({
 	contentScriptWhen: 'ready',
 	contentScriptFile: [data.url("generator.js"), data.url("hostSetter.js"),data.url("linkcontextMenu.js"),data.url("loginChecker.js"),data.url("htmlparser.js")],
 	contentScript: 
-	'var generatedLinkWin="' + data.url("generated_link.html") + '"; ' +
-	' var savedPassword = "' + ss.storage.savedPassword + '"; ' + 
-	' var savedUsername = "' + ss.storage.savedUsername + '"; ' +
-	' var hasSavedDetails = ' + ss.storage.hasSavedDetails + ';',
+	'var generatedLinkWin="' + data.url("generated_link.html") + '"; ',
 	onMessage: onMessageContextMenu,
 	items: [
 	contextMenu.Item({ label: "Download link", data: "ddl" }),
@@ -261,16 +214,13 @@ function onMessageContextMenu(m)
 			showLoaderIconOnWidget();
 			break;
 		case "finish_loading" :
-			showDefaultIconOnWidget();
+			finishLoadingAction(contentWorker);
 			break;
 		case "saveResult" :
 			storeLinksInStorage(m.link,m.text);
 			break;
 		case "send_link_to_subwin" :
 			sendLinkToSubWin(m.content);
-			break;
-		case "generate" :
-			generateLinks(contentWorker,m.links);
 			break;
 		default:
 			return;
