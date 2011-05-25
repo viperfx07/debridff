@@ -1,13 +1,10 @@
 onMessage = function onMessage(msg){
 	console.log(msg.type);
-	if(msg.type=='cached_links')
-	{
-		$("#debridff-link").val(msg.content);
-		countLinks();
-	}
-	else if(msg.type=="generateLink")
-	{
-		generateBy({'username':msg.username,'password':msg.password},msg.links);
+	switch(msg.type){
+		case 'cached_links': $("#debridff-link").val(msg.content); 	countLinks(); break;
+		case 'openGenWin' : openGenWindow(generatedLinkWin); break;
+		case 'noLinkGeneratedAlert' : alert("Debridmax: Error. " + "Possible reasons: \n1. The link and/or password is invalid.\n2. The service is down.\n3. The premium accounts are out of order.\n4. Auto-login username or password is incorrect"); break;
+		default: return;
 	}
 }
 
@@ -35,7 +32,7 @@ $("#debridff-generate").click(function(){
 	}
 	 //generate links
 	console.log("links: "+links);
-	postMessage({'type':'generate','links' : links});
+	generateBy(links);
 	postMessage({'type':"clearLinkCache"});
 });
 

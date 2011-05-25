@@ -7,11 +7,7 @@ onMessage= function onMessage(msg){
 		$("#dm_details").hide(); //hide details
 		$("#subWindowButton").hide(); //hide "Open Downloader" link
 		
-		//if there's login details saved, login using those details
-		if(msg.username)
-			loginWithSavedDetails(msg.username,msg.password,setPopupPage);
-		else	//if not check the login
-			isLoginToDebridmax(setPopupPage);
+		isLoginToDebridmax(setPopupPage);
 	}
 }
 

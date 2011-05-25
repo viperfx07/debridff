@@ -1,12 +1,9 @@
-onMessage = function onMessage(msg){
-	console.log("onMsg: " + msg.type + msg.username + msg.password + msg.links);
-	switch(msg.type)
-	{
-		case 'generateLink':
-			generateBy({'username':msg.username,'password':msg.password},msg.links);
-			break;
-		default:
-			return;
+onMessage = function onMessage(msg)
+{
+	switch(msg.type){
+		case 'openGenWin' : openGenWindow(generatedLinkWin); break;
+		case 'noLinkGeneratedAlert' : alert("Debridmax: Error. " + "Possible reasons: \n1. The link and/or password is invalid.\n2. The service is down.\n3. The premium accounts are out of order.\n4. Auto-login username or password is incorrect"); break;
+		default: return;
 	}
 }
 
@@ -41,7 +38,7 @@ function dsFunction(){
 	else
 	{
 		var thehost = setHost(selectedText); //get the filehosting URL 
-		postMessage({'type':'generate','links' : selectedText}); //it was generateBy(thehost,selectedText);
+		generateBy(selectedText);
 	}
 }
 
@@ -50,5 +47,5 @@ function daFunction()
 	var unparsedlinks = this.nextSibling.nextSibling.textContent;//get the text next to the button
 	var parsedlinks = unparsedlinks.split("\n\n");
 	var thelinks = ((parsedlinks.join("\n")).toString()).trim();
-	postMessage({'type':'generate','links' : thelinks}); //it was using generateBy
+	generateBy(thelinks);
 }

@@ -1,4 +1,8 @@
-v0.3
+v0.4 (free v0.3)
+----
+- Removed auto-login
+
+v0.3 (premium)
 ----
 - Fixed compatibility with Debridmax's new version
 - Changed logo.png

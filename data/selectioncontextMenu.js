@@ -2,7 +2,7 @@
 on("click",function(node,data){
 	var thelinks = ((window.getSelection()).toString()).trim(); //node.textContent is the selected text.
 	if(data=="ddl")
-		postMessage({'type':'generate','links' : thelinks});
+		generateBy(thelinks);
 	else
 		postMessage({'type' : "send_link_to_subwin", 'content' : thelinks});
 		
