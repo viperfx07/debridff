@@ -1,3 +1,7 @@
+v0.4.1
+------
+- Added uploadstation
+
 v0.4 (free v0.3)
 ----
 - Removed auto-login
