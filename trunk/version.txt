@@ -1,6 +1,10 @@
+v0.4.2
+------
+- Added duckload filter
+
 v0.4.1
 ------
-- Added uploadstation
+- Added uploadstation filter
 
 v0.4 (free v0.3)
 ----
