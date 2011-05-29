@@ -28,7 +28,10 @@ function generateBy(linksControlValue) {
 						var data= xhr.responseText;
 						var links_DOM = (HTMLParser(data)).querySelectorAll("a[href]");
 											
-						if(data.indexOf("<b>Lien mort</b>")<0 && data.indexOf("<b>Vous devez passer en premium pour utiliser depositfiles...</b>")<0) //if valid
+						if(data.indexOf("<b>Lien mort</b>")<0 && 
+						data.indexOf("<b>Vous devez passer en premium pour utiliser depositfiles...</b>")<0 &&
+						data.indexOf("<b>Serveur en surcharge, retester votre lien plus tard... Merci</b>")<0
+						) //if valid
 							postMessage({'type':"saveResult", "link":links_DOM[0].getAttribute("href"), "text":links_DOM[0].innerHTML});
 					} 
 					else {
