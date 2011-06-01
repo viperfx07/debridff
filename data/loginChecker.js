@@ -27,6 +27,6 @@ function isLoginToDebridmax(callback) {
 	}
 	var timestamp = new Date();
 	var times = timestamp.getTime().toString();
-	xhr.open("GET", "http://www.debridmax.com/en/multimax/?" + times, false);
+	xhr.open("GET", "http://www.debridmax.com/multimax/?" + times, false);
 	xhr.send("");
 }
