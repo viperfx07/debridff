@@ -1,6 +1,7 @@
 v0.4.5
 ------
 - Added wupload filter
+- Fixed double error message when generating while user was not logged in
 
 v0.4.4
 ------

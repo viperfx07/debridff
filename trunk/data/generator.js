@@ -44,14 +44,9 @@ function generateBy(linksControlValue) {
 				xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
 				xhr.send(postdata);
 			}
-			
-			postMessage({'type': "finish_loading"});
 		}
-		else
-		{
-			alert("You are not currently logged in to Debridmax. Please login before using the tool.");
-			postMessage({'type':"finish_loading"});
-		}
+		postMessage({'type':"finish_loading"});
+		
 	});
 }
 
