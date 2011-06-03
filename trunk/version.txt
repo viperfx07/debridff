@@ -1,3 +1,7 @@
+v0.4.5
+------
+- Added wupload filter
+
 v0.4.4
 ------
 -  Fixed compatibility with the recent change made (translate button, www.debridmax.com/en/ deleted).

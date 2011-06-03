@@ -17,7 +17,8 @@ var hostFilter = new Array(
 	/http:\/\/dl\.free\.fr\/[^\"\r\n< ]+/g,
 	/http:\/\/(\w+\.)?uploadstation\.com\/file\/[^\"\r\n< ]+/g,
 	/http:\/\/(\w+\.)?duckload\.com\/(download|dl|play)\/[^\/\"\r\n< ]+/g,
-	/http:\/\/(\w+\.)?netload\.in\/[^\"\r\n< ]+/g
+	/http:\/\/(\w+\.)?netload\.in\/[^\"\r\n< ]+/g,
+	/http:\/\/(\w+\.)?wupload\.com\/file\/[^\"\r\n< ]+/g
 	);
 
 //filter link for respective host
@@ -39,13 +40,5 @@ function filterTheLink(link) {
 //set the host (rapidshare/megaupload/hotfile/etc)
 function setHost(theString)
 {
-	var host="";
-	var hostFilterIndex = filterTheLink(theString);
-
-	if(hostFilterIndex==0)
-		host=RS_DM;
-	else
-		host=MD_DM;
-	
-	return host;
+	return MD_DM;
 }
