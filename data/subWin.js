@@ -3,7 +3,7 @@ onMessage = function onMessage(msg){
 	switch(msg.type){
 		case 'cached_links': $("#debridff-link").val(msg.content); 	countLinks(); break;
 		case 'openGenWin' : openGenWindow(generatedLinkWin); break;
-		case 'noLinkGeneratedAlert' : alert("Debridmax: Error. " + "Possible reasons: \n1. The link and/or password is invalid.\n2. The service is down.\n3. The premium accounts are out of order.\n4. Auto-login username or password is incorrect"); break;
+		case 'noLinkGeneratedAlert' : alert("Debridmax: Error. " + "Possible reasons: \n1.You're not logged in.\n2. The link and/or password is invalid.\n3. The service is down.\n4. The premium accounts are out of order"); break;
 		default: return;
 	}
 }
