@@ -8,7 +8,6 @@ function isLoginToDebridmax(callback) {
 	  if (xhr.readyState == 4) {
 		if (xhr.status == 200) {
 			var data = xhr.responseText;
-			console.log(data);
 			if(data.indexOf("document.location.href")>=0){ //not logged in
 				login_details.user="Note: You are not currently logged in to Debridmax. Please login before using the tool." + '(<a href="#" id="login">Login</a>)';
 				console.log("notgood");

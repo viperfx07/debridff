@@ -2,7 +2,9 @@ v0.4.5
 ------
 - Added wupload filter
 - Fixed double error message when generating while user was not logged in
-
+- Fixed bug when generating with submission window (line 16 generator.js).
+  //var the_links = (value[0].indexOf("\r")>=0) ? value[0].split("\r\n") : value[0].split("\n");
+  
 v0.4.4
 ------
 -  Fixed compatibility with the recent change made (translate button, www.debridmax.com/en/ deleted).

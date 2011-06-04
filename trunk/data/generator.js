@@ -11,7 +11,9 @@ function generateBy(linksControlValue) {
 			linksControlValue = (linksControlValue.toString()).trim();
 			var postdata;
 			var value = linksControlValue.split("&");
-			var the_links = (value[0].indexOf("\r")) ? value[0].split("\r\n") : value[0].split("\n");
+			console.log(encodeURIComponent(value[0]));
+			
+			var the_links = (value[0].indexOf("\r")>=0) ? value[0].split("\r\n") : value[0].split("\n");
 			var totallinks=0;
 			var index=0;
 			var xhr;
