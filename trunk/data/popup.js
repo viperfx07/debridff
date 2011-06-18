@@ -1,6 +1,15 @@
-onMessage= function onMessage(msg){	
+self.on('message',function(msg){	
 	if(msg.type=="openSubWin")
+	{
+		try{
+			if(myWindow)
+				{myWindow.close();}
+		}
+		catch(err){
+			console.log("err: "+err)
+		}
 		openSubWindow();
+	}
 	else
 	{
 		$(".debridff-loader").show(); //show loader
@@ -9,7 +18,7 @@ onMessage= function onMessage(msg){
 		
 		isLoginToDebridmax(setPopupPage);
 	}
-}
+});
 
 //Set login details and other properties for popup.html
 function setPopupPage(isLoggedIn,login_details){ 
@@ -31,13 +40,12 @@ function setPopupPage(isLoggedIn,login_details){
 	
 	$(".debridff-loader").hide(); //show loader
 	//if subWindowButton is clicked
-	
 	$("#subWindowButton").click(openSubWindow);
 
 	//If (Login) link is clicked
 	$("#login").click(function(){
-		postMessage('openLoginTab');
-		postMessage('hidePanel');
+		self.postMessage('openLoginTab');
+		self.postMessage('hidePanel');
 	});
 }
 
@@ -48,6 +56,7 @@ function openSubWindow() {
 	var left = parseInt((screen.availWidth/2) - (width/2));
 	var top = parseInt((screen.availHeight/2) - (height/2));
 	var windowFeatures = "width=" + width + ",height=" + height + ",status,resizable,left=" + left + ",top=" + top + "screenX=" + left + ",screenY=" + top;
-	myWindow = window.open("resource://jid0-he5hvmwwbqadxgq7a7fbal0uucs-debridff-data/submissionWindow.html", "subWind", windowFeatures);
-	postMessage('hidePanel');
+	myWindow = window.open("resource://jid1-HmJe0R7oe0XAXA-debridff-data/submissionWindow.html", "subWind", windowFeatures);
+	myWindow.focus();
+	self.postMessage('hidePanel');
 }
