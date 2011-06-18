@@ -2,7 +2,7 @@
 //linksControlValue: the filesharing links
 function generateBy(linksControlValue) {
 
-	postMessage({'type':'loading'});
+	self.postMessage({'type':'loading'});
 	isLoginToDebridmax(function(isLoggedIn,login_details){
 
 		if(isLoggedIn)
@@ -28,13 +28,14 @@ function generateBy(linksControlValue) {
 					if (xhr.status == 200) {
 						console.log("200");			
 						var data= xhr.responseText;
+						console.log(data);
 						var links_DOM = (HTMLParser(data)).querySelectorAll("a[href]");
 											
-						if(data.indexOf("<b>Lien mort</b>")<0 && 
-						data.indexOf("<b>Vous devez passer en premium pour utiliser depositfiles...</b>")<0 &&
-						data.indexOf("<b>Serveur en surcharge, retester votre lien plus tard... Merci</b>")<0
+						if(data.indexOf("<b>Lien")<0 && 
+						data.indexOf("<b>Vous")<0 &&
+						data.indexOf("<b>Serveur")<0
 						) //if valid
-							postMessage({'type':"saveResult", "link":links_DOM[0].getAttribute("href"), "text":links_DOM[0].innerHTML});
+							self.postMessage({'type':"saveResult", "link":links_DOM[0].getAttribute("href"), "text":links_DOM[0].innerHTML});
 					} 
 					else {
 						alert("DebridMax: Timeout. " + "\nPossible reasons: \n1. The link and/or password is invalid.\n2. The service is down.\n3. The premium accounts are out of order.");
@@ -47,7 +48,7 @@ function generateBy(linksControlValue) {
 				xhr.send(postdata);
 			}
 		}
-		postMessage({'type':"finish_loading"});
+		self.postMessage({'type':"finish_loading"});
 		
 	});
 }

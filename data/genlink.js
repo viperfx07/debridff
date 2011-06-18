@@ -1,7 +1,6 @@
 var links="";
 //Event listener to get the generated links.
-onMessage = function onMessage(msg)
-{
+self.on('message',function(msg){
 	//Temporary variables
 	var anchorlinks="";
 	var startIndex = 0;
@@ -23,17 +22,17 @@ onMessage = function onMessage(msg)
 	
 	$("#anchorlinks").append(anchorlinks);
 	$("#loader").hide();
-	postMessage({'type':"clearLinksStorage"});
-}
+	self.postMessage({'type':"clearLinksStorage"});
+});
 
 $(document).ready(function(){
 	
-	postMessage({'type':'ready'}); //ready to get the generated links.
+	self.postMessage({'type':'ready'}); //ready to get the generated links.
 		
 	$("#loader").show(); //show load.gif
 	
 	$("#copy").click(function(){ //copy to clipboard
-		postMessage({'type':'copy', 'content':links});
+		self.postMessage({'type':'copy', 'content':links});
 		alert("Link(s) copied");
 	});
 });

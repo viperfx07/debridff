@@ -1,3 +1,10 @@
+v0.4.5.2
+--------
+- Updated Addon-SDK to v1.0b5 and Ginyas function
+- Added alert when server's overloaded (generator.js line 35,36, subwin.js line 6, pageModder.js line 5
+- Fixed Send to submission window context menu. (popup.js line 4-11, main.js line 189-190)
+- Added "Clear Cached Links" button
+
 v0.4.5.1 (After being reviewed by Addon Reviewer)
 --------
 - Added Ginyas function
