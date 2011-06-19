@@ -45,8 +45,7 @@ var ContextButton = function()
 
 	this._init = function()
 	{
-        console.log("init");
-		_linkFounds = "";
+        _linkFounds = "";
 		this._button = document.createElement('button');
 		with (this._button.style)
 		{
@@ -70,7 +69,6 @@ var ContextButton = function()
 			function(e)
 			{
 				thelinks = ((_linkFounds.toString()).split(",")).join("\r\n");
-				console.log("context button links: " + encodeURIComponent(thelinks));
 				generateBy(thelinks);
 				e.stopPropagation();
 			},
@@ -118,7 +116,6 @@ var ContextButton = function()
 
 	this.show = function()
 	{
-		console.log("show");
 		this.updateButtonStyle(this.pos.y, this.pos.x, 'block');
 		this.isActive = true;
 		this.isFrozen = false;
