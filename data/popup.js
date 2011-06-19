@@ -56,7 +56,7 @@ function openSubWindow() {
 	var left = parseInt((screen.availWidth/2) - (width/2));
 	var top = parseInt((screen.availHeight/2) - (height/2));
 	var windowFeatures = "width=" + width + ",height=" + height + ",status,resizable,left=" + left + ",top=" + top + "screenX=" + left + ",screenY=" + top;
-	myWindow = window.open("resource://jid1-HmJe0R7oe0XAXA-debridff-data/submissionWindow.html", "subWind", windowFeatures);
+	myWindow = window.open("resource://jid0-HE5HvmWWBQaDXgq7A7fBAL0UUCs-debridff-data/submissionWindow.html", "subWind", windowFeatures);
 	myWindow.focus();
 	self.postMessage('hidePanel');
 }
