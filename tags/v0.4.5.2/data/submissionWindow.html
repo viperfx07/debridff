@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>DebridFF: Downloader</title>
+		<style type="text/css">
+		body {
+			background: #000000;
+			margin: 0;
+			padding: 0;
+			font: 11px normal Verdana, Arial, Helvetica, sans-serif;
+			color: #fff;
+			width:435px;
+			overflow-x:hidden;
+		}
+		.container {height:350px; width: 435px; margin: 10px auto; float:left;}
+		#logo {width:257px; float:left;}
+		#donate {float:left; margin:10px auto;}
+		#line_counter {font-style: italic; color: #ff3;}
+		</style>
+	</head>
+	<body>
+		<div id="logo"><a id="logolink" href="#"><img src='logo.png' alt="logo" height="100" /></a></div>
+		<div id="donate">
+			<a id="donatelink" href="#"><img src="btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!" /></a>
+			<img alt="" border="0" src="pixel.gif" width="1" height="1" />
+		</div>
+		<div class="container">
+			<hr />
+			<div id="text1">Note: RS - 10 links max. VideoBB - 1 link max</div>
+			<span id="text2">Enter RS/MU/MV/HF/FS/UL/FN/DF/VBB/UD link(s) (1 link per line, maximum 8 links):</span>
+			<textarea id="debridff-link" cols="48" rows="10"></textarea>
+			<br />
+			<span id="line_counter">0 link(s)</span><br/>
+			<span id="pass_note">File password (optional):</span>
+			<input id="debridff-pass" type="text" name="pass" />
+			<br />
+			<center><input type="button" id="debridff-generate" value="GO"/>
+			<input type="button" id="debridff-clearlinks" value="Clear Links"/>
+			</center>
+		</div>
+	</body>
+</html>
