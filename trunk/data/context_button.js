@@ -68,8 +68,15 @@ var ContextButton = function()
 		this._button.addEventListener('click',
 			function(e)
 			{
-				thelinks = ((_linkFounds.toString()).split(",")).join("\r\n");
-				generateBy(thelinks);
+				var links = (_linkFounds.toString().trim()).split(",")
+				var len;
+				var link;
+				for(var i=0, len=links.length; i<len; i++)
+				{
+					link = links[i];
+					console.log("length:" + len);
+					self.port.emit("generateLink", [link,"",len,i]);
+				}
 				e.stopPropagation();
 			},
 			false);

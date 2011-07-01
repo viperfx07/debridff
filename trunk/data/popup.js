@@ -15,8 +15,6 @@ self.on('message',function(msg){
 		$(".debridff-loader").show(); //show loader
 		$("#dm_details").hide(); //hide details
 		$("#subWindowButton").hide(); //hide "Open Downloader" link
-		
-		isLoginToDebridmax(setPopupPage);
 	}
 });
 
@@ -25,7 +23,10 @@ function setPopupPage(isLoggedIn,login_details){
 				
 	var notloggedinMsg = "Note: You are not currently logged in to Debridmax. Please login before using the tool." + '(<a href="#" id="login">Login</a>)';
 	if(login_details.user=="" || login_details.user==notloggedinMsg)
+	{
 		login_details.user= notloggedinMsg;
+		$("#subWindowButton").hide();
+	}
 	else
 		$("#subWindowButton").show();
 			
@@ -38,7 +39,9 @@ function setPopupPage(isLoggedIn,login_details){
 		$(this).attr({src:DM_ROOT + $(this).attr('src')});
 	});
 	
-	$(".debridff-loader").hide(); //show loader
+	$(".debridff-loader").hide(); //hide loader
+	$("a.translate-this-button").hide(); //hide "Translate" button/link
+		
 	//if subWindowButton is clicked
 	$("#subWindowButton").click(openSubWindow);
 

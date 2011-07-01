@@ -32,13 +32,18 @@ for(var i = 0; i< ewb.length; i++)
 
 function dsFunction(){
 	var selectedText = window.getSelection().toString();
-	console.log(encodeURIComponent(selectedText));
 	if(selectedText == "")
 		alert("Select the link first");
 	else
 	{
-		var thehost = setHost(selectedText); //get the filehosting URL 
-		generateBy(selectedText);
+		var links = (selectedText.indexOf("\r")>=0) ? selectedText.split("\r\n") : selectedText.split("\n");
+		var len;
+		var link;
+		for(var i=0, len=links.length; i<len; i++)
+		{
+			link = links[i];
+			self.port.emit("generateLink", [link,"",len,i]);
+		}
 	}
 }
 
@@ -46,6 +51,12 @@ function daFunction()
 {
 	var unparsedlinks = this.nextSibling.nextSibling.textContent;//get the text next to the button
 	var parsedlinks = unparsedlinks.split("\n\n");
-	var thelinks = ((parsedlinks.join("\n")).toString()).trim();
-	generateBy(thelinks);
+	var links = (((parsedlinks.join("\n")).toString()).trim()).split("\n");;
+	var len;
+	var link;
+	for(var i=0, len=links.length; i<len; i++)
+	{
+		link = links[i];
+		self.port.emit("generateLink", [link,"",len,i]);
+	}
 }

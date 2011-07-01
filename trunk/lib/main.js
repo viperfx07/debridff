@@ -28,7 +28,6 @@ new Request({
 
 //links to be shown on generated_link.html
 ss.storage.genlink_href = []; //href
-ss.storage.genlink_text = []; //inner text
 
 //set cachedLinks to null when the addon's started
 ss.storage.cachedLinks="";
@@ -42,6 +41,7 @@ function showLoaderIconOnWidget(){
 }
 
 //Show default icon (icon19.png) as widget icon & decide to whether open generated_link.html or alert that there is no link generated
+//TODO: check length with total link (pass it as parameter)
 function finishLoadingAction(worker){
 	debridWidget.contentURL = data.url("icon19.png");
 	if((ss.storage.genlink_href).length>0)
@@ -72,7 +72,7 @@ function subWindowMsgHandler(msg){
 //generated link window message handler for its page-mod
 function genLinkMsgHandler(msg){
 	if(msg.type=="ready")
-		genLinkWorker.postMessage({'linksarray':ss.storage.genlink_href, 'textInLink':ss.storage.genlink_text});
+		genLinkWorker.postMessage({'linksarray':ss.storage.genlink_href});
 	else if(msg.type=="clearLinksStorage")
 		clearLinksStorage();
 	else
@@ -97,7 +97,6 @@ function clearLinksStorage()
 {
 	console.log("clear links storage");
 	ss.storage.genlink_href=[];
-	ss.storage.genlink_text=[];
 }
 
 //store generated links in storage
@@ -105,7 +104,6 @@ function storeLinksInStorage(link,text)
 {
 	console.log("link stored: " + link);
 	ss.storage.genlink_href.push(link);
-	ss.storage.genlink_text.push(text);
 }
 
 //send the link to submission window
@@ -135,7 +133,37 @@ pagemods.PageMod({
 	contentScriptFile: [data.url("jquery-1.5.2.min.js"), data.url("generator.js"), data.url("hostSetter.js"), data.url("subWin.js"), data.url("loginChecker.js"), data.url("htmlparser.js")],
 	contentScript: 'var generatedLinkWin="' + data.url("generated_link.html") + '";',
 	onAttach: function onAttach(worker){
+		
 		worker.on('message', subWindowMsgHandler);
+		
+		//param[0] is the link
+		//param[1] is the password of the link
+		//param[2] is total of the links
+		//param[3] is index of the link
+		worker.port.on("generateLink",function generateLink(param){
+			console.log("generateLink");
+			showLoaderIconOnWidget();
+			new Request({
+			 url: "http://www.debridmax.com/multimax/p.php",
+			 content: "hotlink=" + encodeURIComponent(param[0]) + "&pass=" + encodeURIComponent(param[1]) + "&t=2e", 
+			 onComplete: function(){
+					var txt=this.response.text;
+					if(txt.indexOf('document.location.href="../login.php"')>=0)
+						txt = '<a href="http://www.debridmax.com/login.php">Please login before using this extension</a>';
+					else if(txt.indexOf("<b>Lien")>=0)
+						txt = '<a href="#">The link is invalid</a>';
+					else if(txt.indexOf("<b>Serveur")>=0)
+						txt = '<a href="http://www.debridmax.com/premium.php">The server is overload. Buy premium to avoid this.</a>';
+					else if(txt.indexOf("<b>Vous")>=0)
+						txt = '<a href="#">Buy premium to use this feature.</a>';
+                   
+                    ss.storage.genlink_href.push(txt);
+					console.log(txt);
+					if(param[2] == param[3]+1)
+						finishLoadingAction(worker);
+				}
+			}).post();
+		});
 		subWinWorker = worker;
 		postLinksToSubWin();
 	}
@@ -161,6 +189,36 @@ pagemods.PageMod({
   contentScript: 'var generatedLinkWin="' + data.url("generated_link.html") + '"; ',
   onAttach: function onAttach(worker) {
 	worker.on('message', contentMsgHandler);
+		
+	//param[0] is the link
+	//param[1] is the password of the link
+	//param[2] is total of the links
+	//param[3] is index of the link
+	worker.port.on("generateLink",function generateLink(param){
+		console.log("generateLink");
+		showLoaderIconOnWidget();
+		new Request({
+		 url: "http://www.debridmax.com/multimax/p.php",
+		 content: "hotlink=" + encodeURIComponent(param[0]) + "&pass=" + encodeURIComponent(param[1]) + "&t=2e", 
+		 onComplete: function(){
+				var txt=this.response.text;
+				if(txt.indexOf('document.location.href="../login.php"')>=0)
+					txt = '<a href="http://www.debridmax.com/login.php">Please login before using this extension</a>';
+				else if(txt.indexOf("<b>Lien")>=0)
+					txt = '<a href="#">The link is invalid</a>';
+				else if(txt.indexOf("<b>Serveur")>=0)
+					txt = '<a href="http://www.debridmax.com/premium.php">The server is overload. Buy premium to avoid this.</a>';
+				else if(txt.indexOf("<b>Vous")>=0)
+					txt = '<a href="#">Buy premium to use this feature.</a>';
+			   
+				ss.storage.genlink_href.push(txt);
+				console.log(txt);
+				if(param[2] == param[3]+1)
+					finishLoadingAction(worker);
+			}
+		}).post();
+	});
+	
     contentWorker = worker;
   }
 });
@@ -176,7 +234,19 @@ var debridWidget = require("widget").Widget({
 		contentURL: data.url("popup.html"),
 		contentScriptFile: [data.url("jquery-1.5.2.min.js"),data.url("popup.js"),data.url("hostSetter.js"),data.url("loginChecker.js"),data.url("htmlparser.js")],
 		onShow: function(){
-			this.postMessage({'type':'saved_login_details', 'username' : '', 'password':''});
+			this.postMessage("loading");
+			
+			new Request({
+			 url: "http://www.debridmax.com/multimax/",
+			 onComplete: function(){
+				console.log(this.response.status);
+				if(this.response.status=="200") //if success
+					debridWidget.panel.port.emit("parseLoginDetails",this.response.text);
+				else
+					debridWidget.panel.port.emit("loginDetailsRequestError","");
+				}
+			}).get();
+			
 		},
 		onMessage: function(m){
 			switch (m){
@@ -245,6 +315,31 @@ function onMessageContextMenu(m)
 		case "send_link_to_subwin" :
 			sendLinkToSubWin(m.content);
 			break;
+		case "generateLink" :
+			console.log("generateLink");
+			showLoaderIconOnWidget();
+			new Request({
+			 url: "http://www.debridmax.com/multimax/p.php",
+			 content: "hotlink=" + encodeURIComponent(m.link) + "&pass=" + "&t=2e", 
+			 onComplete: function(){
+					var txt=this.response.text;
+					if(txt.indexOf('document.location.href="../login.php"')>=0)
+						txt = '<a href="http://www.debridmax.com/login.php">Please login before using this extension</a>';
+					else if(txt.indexOf("<b>Lien")>=0)
+						txt = '<a href="#">The link is invalid</a>';
+					else if(txt.indexOf("<b>Serveur")>=0)
+						txt = '<a href="http://www.debridmax.com/premium.php">The server is overload. Buy premium to avoid this.</a>';
+					else if(txt.indexOf("<b>Vous")>=0)
+						txt = '<a href="#">Buy premium to use this feature.</a>';
+				   
+					ss.storage.genlink_href.push(txt);
+					console.log(txt);
+					if(m.length == m.index+1)
+						finishLoadingAction(contentWorker);
+				}
+			}).post();
+		
+			
 		default:
 			return;
 	}

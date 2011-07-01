@@ -1,3 +1,10 @@
+v0.5
+----
+- fixed compability with Firefox 5
+- changed loginChecker.js methods to check login details
+- TODO: link right click, finishLoading, all error must be with the finishLoading
+
+
 v0.4.5.2
 --------
 - Updated Addon-SDK to v1.0b5 and Ginyas function

@@ -21,19 +21,19 @@ function countLinks(){
 
 //Event for debridff-generate button
 $("#debridff-generate").click(function(){
-	links = jQuery.trim($("#debridff-link").val());
-	host_url = setHost((links.split("\n"))[0]);
-	if(host_url == MD_DM)
+	var links = ($.trim($("#debridff-link").val())).split("\n");
+	var pass = ($("#debridff-pass").val()) ? $("#debridff-pass").val() : " ";
+	//generate links
+	var len;
+	var link;
+	for(var i=0, len=links.length; i<len; i++)
 	{
-		if($("#debridff-pass").val() != "")
-			links = links + "&" + $("#debridff-pass").val();
-		else
-			links = links + "&" + "";
+		link = links[i];
+		console.log(len);
+		self.port.emit("generateLink", [link,pass,len,i]);
 	}
-	 //generate links
-	console.log("links: "+links);
-	generateBy(links);
 	self.postMessage({'type':"clearLinkCache"});
+	
 });
 
 $("#debridff-clearlinks").click(function(){
