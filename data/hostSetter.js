@@ -1,8 +1,3 @@
-//DebridMax URLs
-const DM_ROOT = 'http://www.debridmax.com/';
-const MD_DM = 'http://www.debridmax.com/multimax/';
-const RS_DM = 'http://www.debridmax.com/rapidshare/';
-const VBB_DM = 'http://www.debridmax.com/videobb/';
 var hostFilter = new Array(
     /(http|https):\/\/(\w+\.)?rapidshare\.com\/(files\/[^\"\r\n< ]+|#!download[^\"\r\n< ]+)/g,
     /http:\/\/(\w+\.)?megaupload\.com\/([a-zA-Z]+\/)?\?[a-zA-Z]=[0-9a-zA-Z]{8}/g,
@@ -35,10 +30,4 @@ function filterTheLink(link) {
 		}
 	}
 	return filterIndex;
-}
-
-//set the host (rapidshare/megaupload/hotfile/etc)
-function setHost(theString)
-{
-	return MD_DM;
 }

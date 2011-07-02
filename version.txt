@@ -1,8 +1,18 @@
+Issues:
+- namespace pollution: context-button.js, main.js
+
+- Warning (context-button.js): List of entities: trim, mouseStatus, checkMultiLink, updateContextButton, buttonIcon, hostFilter, selectedText, _linkFounds, ContextButton, btn, viewPartialSourceForSelection
+
+- Warning (context-button.js): pagemods, generator, contextMenu, ss, tb, require, Request, pp, panels, data, tt
+
+
+dangerous global object: eval on main.js
+
 v0.5
 ----
 - fixed compability with Firefox 5
 - changed loginChecker.js methods to check login details
-- TODO: link right click, finishLoading, all error must be with the finishLoading
+- changed generator.js method to generate link (moved to library)
 
 
 v0.4.5.2

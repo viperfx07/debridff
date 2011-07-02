@@ -1,5 +1,4 @@
-//links to be copied to clipboard
-var links="";
+var linksCopied=""; //links to be copied to clipboard
 
 //Event listener to get the generated links.
 self.on('message',function(msg){
@@ -12,7 +11,6 @@ self.on('message',function(msg){
 		
 	//From message
 	var linksarray = msg.linksarray;
-			
 	var endIndex = startIndex + linksarray.length - 1
 	
 	for(i=startIndex;i<=endIndex;i++)
@@ -21,9 +19,9 @@ self.on('message',function(msg){
 		inner = $("a[href]:first",linksarray[i]).html()
 		
 		if(i==endIndex)
-			links+=linksarray[i];
+			linksCopied+=linksarray[i];
 		else
-			links+=linksarray[i]+"\r\n";
+			linksCopied+=linksarray[i]+"\r\n";
 			anchorlinks += "Link " + (i+1) + ': <a href='+href+'>'+inner+'</a><br/>';
 	}
 	
@@ -36,8 +34,8 @@ $(document).ready(function(){
 	
 	self.postMessage({'type':'ready'}); //ready to get the generated links.
 		
-	$("#copy").click(function(){ //copy to clipboard
-		self.postMessage({'type':'copy', 'content':links});
+	$("#copy").click(function(){ //copy to clipboard button event
+		self.postMessage({'type':'copy', 'content':linksCopied});
 		alert("Link(s) copied");
 	});
 });

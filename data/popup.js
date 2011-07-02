@@ -1,20 +1,31 @@
 self.on('message',function(msg){	
-	if(msg.type=="openSubWin")
-	{
-		try{
+	console.log("popup.js: " + msg.type); 
+	
+	switch(msg.type){
+		case "openSubWin":
+			try{
 			if(myWindow)
 				{myWindow.close();}
-		}
-		catch(err){
-			console.log("err: "+err)
-		}
-		openSubWindow();
-	}
-	else
-	{
-		$(".debridff-loader").show(); //show loader
-		$("#dm_details").hide(); //hide details
-		$("#subWindowButton").hide(); //hide "Open Downloader" link
+			}
+			catch(err){
+				console.log("err: "+err);
+				break;
+			}
+			openSubOrGenWindow("subwin");
+			break;
+		
+		case "openGenWin" :
+			openSubOrGenWindow("genwin"); break;
+			
+		case 'noLinkGeneratedAlert' :
+			alert("Debridmax: Error. " + "Possible reasons: \n1. You're not logged in.\n2. The link and/or password is invalid.\n3. The service is down.\n4. The premium accounts are out of order. \n5. The server is overloaded.");
+			break;
+		
+		default: 
+			$(".debridff-loader").show(); //show loader
+			$("#dm_details").hide(); //hide details
+			$("#subWindowButton").hide(); //hide "Open Downloader" link
+			return;
 	}
 });
 
@@ -36,14 +47,14 @@ function setPopupPage(isLoggedIn,login_details){
 			
 	//Add root server url prior to the img src (this for "OK" image)
 	$("img").each(function(){
-		$(this).attr({src:DM_ROOT + $(this).attr('src')});
+		$(this).attr({src:"http://www.debridmax.com/" + $(this).attr('src')});
 	});
 	
 	$(".debridff-loader").hide(); //hide loader
 	$("a.translate-this-button").hide(); //hide "Translate" button/link
 		
 	//if subWindowButton is clicked
-	$("#subWindowButton").click(openSubWindow);
+	$("#subWindowButton").click(function(){ openSubOrGenWindow("subwin");});
 
 	//If (Login) link is clicked
 	$("#login").click(function(){
@@ -53,13 +64,20 @@ function setPopupPage(isLoggedIn,login_details){
 }
 
 //Open the Submission Window
-function openSubWindow() {
+function openSubOrGenWindow(windowType) {
 	var width = 435;
 	var height = 400;
 	var left = parseInt((screen.availWidth/2) - (width/2));
 	var top = parseInt((screen.availHeight/2) - (height/2));
 	var windowFeatures = "width=" + width + ",height=" + height + ",status,resizable,left=" + left + ",top=" + top + "screenX=" + left + ",screenY=" + top;
-	myWindow = window.open("resource://jid0-HE5HvmWWBQaDXgq7A7fBAL0UUCs-debridff-data/submissionWindow.html", "subWind", windowFeatures);
-	myWindow.focus();
+	if(windowType=="subwin"){
+		myWindow = window.open("resource://jid0-HE5HvmWWBQaDXgq7A7fBAL0UUCs-debridff-data/submissionWindow.html", "subWind", windowFeatures);
+		myWindow.focus();
+	}
+	else
+	{
+		var genWindow = window.open("resource://jid0-HE5HvmWWBQaDXgq7A7fBAL0UUCs-debridff-data/generated_link.html", "genWind", windowFeatures);
+		genWindow.focus();
+	}
 	self.postMessage('hidePanel');
 }
