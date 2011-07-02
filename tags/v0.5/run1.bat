@@ -1,0 +1,1 @@
+cfx run -b "C:\test\FirefoxPortable\FirefoxPortable.exe" -p "C:\test\FirefoxPortable\Data\profile"
