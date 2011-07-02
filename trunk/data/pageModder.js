@@ -1,12 +1,3 @@
-self.on('message',function(msg)
-{
-	switch(msg.type){
-		case 'openGenWin' : openGenWindow(generatedLinkWin); break;
-		case 'noLinkGeneratedAlert' : alert("Debridmax: Error. " + "Possible reasons: \n1. You're not logged in.\n2. The link and/or password is invalid.\n3. The service is down.\n4. The premium accounts are out of order. \n5. The server is overloaded."); break;
-		default: return;
-	}
-});
-
 //Add Download All and Download Selected buttons before td.code, pre, and blockquote element
 var ewb = document.querySelectorAll("td.code, pre, blockquote"); //ewb = element with buttons
 for(var i = 0; i< ewb.length; i++)
