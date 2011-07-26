@@ -1,12 +1,7 @@
-Issues:
-- namespace pollution: context-button.js, main.js
+v0.5.1
+------
+- Changed eval from ginyas to anonymous function on main.js
 
-- Warning (context-button.js): List of entities: trim, mouseStatus, checkMultiLink, updateContextButton, buttonIcon, hostFilter, selectedText, _linkFounds, ContextButton, btn, viewPartialSourceForSelection
-
-- Warning (context-button.js): pagemods, generator, contextMenu, ss, tb, require, Request, pp, panels, data, tt
-
-
-dangerous global object: eval on main.js
 
 v0.5
 ----
