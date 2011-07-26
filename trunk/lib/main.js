@@ -18,7 +18,11 @@ exports.main = function(options, callbacks) {
 	
 	//BEGIN Ginyas function
 	function globalEval(src, callback) {
-		eval(src);
+		
+		//it was eval(src); This can be changed using anonymous function like below
+		var altEval = new Function(src);
+		altEval();
+				
 		if (callback){callback();}
 	}
 
