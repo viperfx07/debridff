@@ -8,21 +8,21 @@ var selectedText = '';
 var buttonIcon = 'url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAACPklEQVR42qVSO2iaYRT1EY0ajYZIUTFBBUuyJPiCIgZRdLOBbBVRCVbpUJAOxcGhQRDpUoSCpVKlIrZQiQhugQw6OisIGQJOCuLg4Hp6v4+aRhJaaIfz893z33vuUyAQCMCg1Wqh0WiwslcQi8V3b5FQ+OC/gH0UCgWcTidsNttagF6vRz6fh9fr5XZifx/u7W0I7wt5lErod3fhcrlwdHwM5eYmnkilkJFQMBhEuVxGOp2GSCTCS6rwUiLBi50dSMjmAt+JeE/lH1ksODEYUKIMLbkcJZUKgYMDvLu4wHOPB2nia8S3KOiSgt+SmGpjA4Jn5FiTyfCVhH5Q5hzZYZ0OH7a20CD+Fdl1en+h9zcCE2D4TG0/JfAZ6OlHhBRPyNlObYTDYdgOD/FarcYnCk4RryPnj1Rpg5LEyVay7Ksh3ofP50M0GoXdbue29NdQFRTwZm8PJmrjwRbcbjfq9TpHo9FAKpWCnBzZahmXy+W4M5t+JpPhnNls/i0QiURwc3ODs7MzZLNZzOdz+P1+mEwmLBYLjMdjGI1GLjgcDrFcLvnW1gT6/f5dWcViEVdXV7DQZm5vb9FsNnF+fo5QKIRKpcIT/FEgmUxiNBrBarVygVgshna7jVKpxKv8q0ChUECv1+MVsNYMdB+TyYT7MO5RAdabw+FAIpHAdDrlmdgMBoMBv8Lr62tUq1U+h9lsti7ATrbb7XK0Wi2cnp7yievooGq1GneMx+MIBAJQ0210Oh0c0JU+egf/gP8T+Al1/60ec2qEYAAAAABJRU5ErkJggg==)';
 
 var hostFilter = new Array(
-    /(http|https):\/\/(\w+\.)?rapidshare\.com\/(files\/[^\"\r\n< ]+|#!download[^\"\r\n< ]+)/g,
-    /http:\/\/(\w+\.)?megaupload\.com\/([a-zA-Z]+\/)?\?[a-zA-Z]=[0-9a-zA-Z]{8}/g,
-    /http:\/\/(\w+\.)?megavideo\.com\/([a-zA-Z]+\/)?\?[a-zA-Z]=[0-9a-zA-Z]{8}/g,
-    /http:\/\/(\w+\.)?depositfiles\.com\/([a-zA-Z]+\/)?files\/[^\"\r\n< ]+/g,
-    /http:\/\/(\w+\.)?hotfile\.com\/dl\/[0-9a-zA-Z]+\/[\/[0-9a-zA-Z]+\//g,
-    /http:\/\/(\w+\.)?u(ploaded|l)\.to\/(file\/|\?id=|)[0-9a-zA-Z]{6}/g,  
-    /http:\/\/(\w+\.)?uploading\.com\/files\/[a-zA-Z0-9]+\//g,    
-    /http:\/\/(\w+\.)?filesonic\.(com|fr|de|it|net|org)\/file\/[^\"\r\n< ]+/g,
-    /http:\/\/(\w+\.)?fileserve\.com\/file\/[^\"\r\n< ]+/g,
-	/http:\/\/(\w+\.)?videobb.com\/video\/[^\"\r\n< ]+/g,
-	/http:\/\/dl\.free\.fr\/[^\"\r\n< ]+/g,
-	/http:\/\/(\w+\.)?uploadstation\.com\/file\/[^\"\r\n< ]+/g,
-	/http:\/\/(\w+\.)?duckload\.com\/(download|dl|play)\/[^\/\"\r\n< ]+/g,
-	/http:\/\/(\w+\.)?netload\.in\/[^\"\r\n< ]+/g,
-	/http:\/\/(\w+\.)?wupload\.com\/file\/[^\"\r\n< ]+/g
+    /^(http|https):\/\/(\w+\.)?rapidshare\.com\/(files\/[^\"\r\n< ]+|#!download[^\"\r\n< ]+)/g,
+    /^http:\/\/(\w+\.)?megaupload\.com\/([a-zA-Z]+\/)?\?[a-zA-Z]=[0-9a-zA-Z]{8}/g,
+    /^http:\/\/(\w+\.)?megavideo\.com\/([a-zA-Z]+\/)?\?[a-zA-Z]=[0-9a-zA-Z]{8}/g,
+    /^http:\/\/(\w+\.)?depositfiles\.com\/([a-zA-Z]+\/)?files\/[^\"\r\n< ]+/g,
+    /^http:\/\/(\w+\.)?hotfile\.com\/dl\/[0-9a-zA-Z]+\/[\/[0-9a-zA-Z]+\//g,
+    /^http:\/\/(\w+\.)?u(ploaded|l)\.to\/(file\/|\?id=|)[0-9a-zA-Z]{6}/g,  
+    /^http:\/\/(\w+\.)?uploading\.com\/files\/[a-zA-Z0-9]+\//g,    
+    /^http:\/\/(\w+\.)filesonic\.(com|fr|de|it|net|org)\/file\/[^\"\r\n< ]+/g,
+    /^http:\/\/(\w+\.)?fileserve\.com\/file\/[^\"\r\n< ]+/g,
+	/^http:\/\/(\w+\.)?videobb.com\/video\/[^\"\r\n< ]+/g,
+	/^http:\/\/dl\.free\.fr\/[^\"\r\n< ]+/g,
+	/^http:\/\/(\w+\.)?uploadstation\.com\/file\/[^\"\r\n< ]+/g,
+	/^http:\/\/(\w+\.)?duckload\.com\/(download|dl|play)\/[^\/\"\r\n< ]+/g,
+	/^http:\/\/(\w+\.)?netload\.in\/[^\"\r\n< ]+/g,
+	/^http:\/\/(\w+\.)?wupload\.com\/file\/[^\"\r\n< ]+/g
 	);
 	
 function checkMultiLink(link) {
@@ -224,7 +224,8 @@ document.addEventListener('keydown',
 	function(e)
 	{
 		if ((e.keyCode == 27 && e.shiftKey == false && e.ctrlKey == false && e.altKey == false) ||
-			(trim(window.getSelection().toString()) == ''))
+			//(trim(window.getSelection().toString()) == ''))
+			(window.getSelection().toString().trim() == ''))
 		{
 			if (btn.isActive) btn.close();
 		}
@@ -242,7 +243,8 @@ function updateContextButton(eventArgs, checkMouseStatus)
 	if (target.nodeName != 'TEXTAREA' && target.nodeName != 'INPUT' &&
 		pressedTarget.nodeName != 'TEXTAREA' && pressedTarget.nodeName != 'INPUT')
 	{
-		if (trim(selectedText) != '' && (!checkMouseStatus || mouseStatus.pressedAndMoved))
+		//if (trim(selectedText) != '' && (!checkMouseStatus || mouseStatus.pressedAndMoved))
+		if ((selectedText.trim() != '') && (!checkMouseStatus || mouseStatus.pressedAndMoved))
 		{
 			var buttonShift;
 			if (checkMouseStatus)
@@ -266,7 +268,8 @@ function updateContextButton(eventArgs, checkMouseStatus)
 	}
 }
 
+/*
 function trim(string)
 {
 	return string.replace(/^\s+|\s+$/g, '');
-}
+}*/

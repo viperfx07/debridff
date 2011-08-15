@@ -41,6 +41,18 @@ function setPopupPage(isLoggedIn,login_details){
 	else
 		$("#subWindowButton").show();
 			
+	/*
+	var href = "http://www.google.com/";
+	var text = "Google";
+	$("body").append(
+		$("<div>", { class: "foo" })
+			.append($("<a>", { href: href, text: text })
+				.click(function (event) { alert(event.target.href) }))
+        .append($("<span>").text("Foo")));
+	
+	*/
+	
+	
 	//Write login, credit, and server load;
 	$("#dm_details").html(login_details.user);
 	$("#dm_details").show();
