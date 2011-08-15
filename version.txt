@@ -1,5 +1,12 @@
+v0.5.2
+---------
+- Comment trim() on context_button.js
+- TODO: escapestring html on main.js
+   - popup.js line 45, subWin.js line 23,
+- TODO: create testing instruction
+
 v0.5.1
-------
+---------
 - Changed eval from ginyas to anonymous function on main.js
 
 
