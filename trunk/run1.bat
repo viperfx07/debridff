@@ -1,1 +1,1 @@
-cfx run -b "C:\test\FirefoxPortable\FirefoxPortable.exe" -p "C:\test\FirefoxPortable\Data\profile"
+cfx run -b "C:\test\PortableAppsPlatform\PortableApps\FirefoxPortable\FirefoxPortable.exe" -p "C:\test\PortableAppsPlatform\PortableApps\FirefoxPortable\Data\profile"
