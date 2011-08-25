@@ -7,9 +7,14 @@ var contextMenu = require("context-menu");
 var generator = require("generator");
 var Request = require("request").Request;
 
-const win = require("windows").browserWindows;
+
 const hiddenFrames = require("hidden-frame");
+const win = require("windows").browserWindows;
+
+//For making windows
 const {Cc, Ci} = require("chrome");
+					  
+					  
 //BEGIN Ginyas variables
 var tb = require("tabs");
 var tt = require("timer");
@@ -66,7 +71,7 @@ exports.main = function(options, callbacks) {
 		else
 			debridWidget.panel.postMessage({'type':'noLinkGeneratedAlert'});
 	}
-
+	
 	//submission window message handler for its page-mod
 	function subWindowMsgHandler(msg){
 		console.log("subWinMsgHandler msg.type: " + msg.type);
@@ -109,14 +114,8 @@ exports.main = function(options, callbacks) {
 				if(tab.url==data.url("submissionWindow.html"))
 					tab.close();
 			}
-	
 		}
-		var testWin = Cc['@mozilla.org/appshell/window-mediator;1']
-                      .getService(Ci.nsIWindowMediator)
-                      .getMostRecentWindow("navigator:browser");
-				
-		testWin.openDialog(data.url("submissionWindow.html"),
-                        "subWin",  "width=435, height=400,status,resizable", null,null,null);
+		win.open(data.url("submissionWindow.html"));
 	}
 		
 		
