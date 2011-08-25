@@ -13,10 +13,7 @@ self.on('message',function(msg){
 			}
 			openSubOrGenWindow("subwin");
 			break;
-		
-		case "openGenWin" :
-			openSubOrGenWindow("genwin"); break;
-			
+					
 		case 'noLinkGeneratedAlert' :
 			alert("Debridmax: Error. " + "Possible reasons: \n1. You're not logged in.\n2. The link and/or password is invalid.\n3. The service is down.\n4. The premium accounts are out of order. \n5. The server is overloaded.");
 			break;
@@ -28,6 +25,7 @@ self.on('message',function(msg){
 			return;
 	}
 });
+
 
 //Set login details and other properties for popup.html
 function setPopupPage(isLoggedIn,login_details){ 
@@ -83,13 +81,14 @@ function openSubOrGenWindow(windowType) {
 	var top = parseInt((screen.availHeight/2) - (height/2));
 	var windowFeatures = "width=" + width + ",height=" + height + ",status,resizable,left=" + left + ",top=" + top + "screenX=" + left + ",screenY=" + top;
 	if(windowType=="subwin"){
-		myWindow = window.open("resource://jid0-HE5HvmWWBQaDXgq7A7fBAL0UUCs-debridff-data/submissionWindow.html", "subWind", windowFeatures);
+		myWindow = window.open("resource://jid0-HE5HvmWWBQaDXgq7A7fBAL0UUCs-at-jetpack-debridff-data/submissionWindow.html", "subWind", windowFeatures);
 		myWindow.focus();
 	}
 	else
 	{
-		var genWindow = window.open("resource://jid0-HE5HvmWWBQaDXgq7A7fBAL0UUCs-debridff-data/generated_link.html", "genWind", windowFeatures);
-		genWindow.focus();
+		console.log("trying to open genwin");
+		var genWindow = window.open("resource://jid0-HE5HvmWWBQaDXgq7A7fBAL0UUCs-at-jetpack-debridff-data/generated_link.html", "genWind", windowFeatures);
+		//genWindow.focus();
 	}
 	self.postMessage('hidePanel');
 }

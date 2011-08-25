@@ -20,9 +20,14 @@
 		a { font:12px; color: #f00; }
 		a:hover { color: #ff0105; } 
 	</style>
+	<script>
+   function changeScreenSize(w,h)
+     {
+       window.resizeTo( w,h )
+	 }
+</script>
 </head>
-
-<body>
+<body onload="changeScreenSize(455,495)">
 	<div id="logo"><a id="logolink" href="#"><img src='logo.png' height="100" alt="logo" /></a></div>
 	<div id="donate">
 		<a id="donatelink" href="#"><img src="btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!" /></a>
