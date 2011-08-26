@@ -2,22 +2,6 @@ self.on('message',function(msg){
 	console.log("popup.js: " + msg.type); 
 	
 	switch(msg.type){
-		case "openSubWin":
-			try{
-			if(myWindow)
-				{myWindow.close();}
-			}
-			catch(err){
-				console.log("err: "+err);
-				break;
-			}
-			openSubOrGenWindow("subwin");
-			break;
-					
-		case 'noLinkGeneratedAlert' :
-			alert("Debridmax: Error. " + "Possible reasons: \n1. You're not logged in.\n2. The link and/or password is invalid.\n3. The service is down.\n4. The premium accounts are out of order. \n5. The server is overloaded.");
-			break;
-		
 		default: 
 			$(".debridff-loader").show(); //show loader
 			$("#dm_details").hide(); //hide details
@@ -52,7 +36,7 @@ function setPopupPage(isLoggedIn,login_details){
 	
 	
 	//Write login, credit, and server load;
-	$("#dm_details").html(login_details.user);
+	$("#dm_details").text(login_details.user);
 	$("#dm_details").show();
 			
 	//Add root server url prior to the img src (this for "OK" image)
