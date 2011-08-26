@@ -14,30 +14,22 @@ self.on('message',function(msg){
 //Set login details and other properties for popup.html
 function setPopupPage(isLoggedIn,login_details){ 
 				
-	var notloggedinMsg = "Note: You are not currently logged in to Debridmax. Please login before using the tool." + '(<a href="#" id="login">Login</a>)';
-	if(login_details.user=="" || login_details.user==notloggedinMsg)
+	if(isLoggedIn)
 	{
-		login_details.user= notloggedinMsg;
-		$("#subWindowButton").hide();
-	}
-	else
+		$("p#user").text(login_details.user);
+		$("p#acc_type").text(login_details.acc_type);
+		$("p#points").text(login_details.points);
+		if(login_details.premium_days)
+			$("p#premium_days").text(login_details.premium_days);
 		$("#subWindowButton").show();
-			
-	/*
-	var href = "http://www.google.com/";
-	var text = "Google";
-	$("body").append(
-		$("<div>", { class: "foo" })
-			.append($("<a>", { href: href, text: text })
-				.click(function (event) { alert(event.target.href) }))
-        .append($("<span>").text("Foo")));
+	}
+	else{
+		$("#subWindowButton").hide();
+		$("p#user").html("Note: You are not currently logged in to Debridmax. Please login before using the tool." + '(<a href="#" id="login">Login</a>)');
+	}
 	
-	*/
-	
-	
-	//Write login, credit, and server load;
-	$("#dm_details").text(login_details.user);
 	$("#dm_details").show();
+	
 			
 	//Add root server url prior to the img src (this for "OK" image)
 	$("img").each(function(){
@@ -48,7 +40,7 @@ function setPopupPage(isLoggedIn,login_details){
 	$("a.translate-this-button").hide(); //hide "Translate" button/link
 		
 	//if subWindowButton is clicked
-	$("#subWindowButton").click(function(){ openSubOrGenWindow("subwin");});
+	$("#subWindowButton").click(function(){ openSubOrGenWindow();});
 
 	//If (Login) link is clicked
 	$("#login").click(function(){
@@ -64,15 +56,8 @@ function openSubOrGenWindow(windowType) {
 	var left = parseInt((screen.availWidth/2) - (width/2));
 	var top = parseInt((screen.availHeight/2) - (height/2));
 	var windowFeatures = "width=" + width + ",height=" + height + ",status,resizable,left=" + left + ",top=" + top + "screenX=" + left + ",screenY=" + top;
-	if(windowType=="subwin"){
-		myWindow = window.open("resource://jid0-HE5HvmWWBQaDXgq7A7fBAL0UUCs-at-jetpack-debridff-data/submissionWindow.html", "subWind", windowFeatures);
-		myWindow.focus();
-	}
-	else
-	{
-		console.log("trying to open genwin");
-		var genWindow = window.open("resource://jid0-HE5HvmWWBQaDXgq7A7fBAL0UUCs-at-jetpack-debridff-data/generated_link.html", "genWind", windowFeatures);
-		//genWindow.focus();
-	}
+	myWindow = window.open("resource://jid0-HE5HvmWWBQaDXgq7A7fBAL0UUCs-at-jetpack-debridff-data/submissionWindow.html", "subWind", windowFeatures);
+	myWindow.focus();
+	
 	self.postMessage('hidePanel');
 }

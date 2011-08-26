@@ -1,9 +1,10 @@
-v0.5.2
----------
-- Comment trim() on context_button.js
-- TODO: escapestring html on main.js
-   - popup.js line 45, subWin.js line 23,
-- TODO: create testing instruction
+v0.6
+------
+- Delete trim() on context_button.js
+- Fixed compatibility with Firefox 6
+- Anchored hostFilter regular expressions. /http:/ ? /^http:/
+- Using .text() instead of .html() to create DOM nodes from HTML strings
+- TODO: fix ginyas
 
 v0.5.1
 ---------

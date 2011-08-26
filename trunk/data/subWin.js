@@ -20,7 +20,7 @@ function countLinks(){
 		$("#debridff-generate").attr("disabled",false);
 	}
 			
-	$("#line_counter").html("You've entered " + total + " link(s)");
+	$("#line_counter").text("You've entered " + total + " link(s)");
 }
 
 //Event for debridff-generate button
