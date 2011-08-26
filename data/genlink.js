@@ -16,7 +16,7 @@ self.on('message',function(msg){
 	for(i=startIndex;i<=endIndex;i++)
 	{
 		href = $("a[href]:first",linksarray[i]).attr('href');
-		inner = $("a[href]:first",linksarray[i]).html()
+		inner = $("a[href]:first",linksarray[i]).text() //it's safer using text() when it comes to sanitizing the code;
 		
 		if(i==endIndex)
 			linksCopied+=linksarray[i];
