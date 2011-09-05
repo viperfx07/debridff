@@ -1,3 +1,7 @@
+v0.6.1
+-------
+- Fixed Ginyas code (by Ginyas)
+
 v0.6
 ------
 - Delete trim() on context_button.js

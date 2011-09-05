@@ -32,7 +32,7 @@ exports.main = function(options, callbacks) {
 	console.log(options.loadReason);
 		
 	//BEGIN Ginyas function 
-	/* TODO: fix this on the next version
+	
 	function globalEval(src, callback) {
 		
 		//it was eval(src); This can be changed using anonymous function like below
@@ -51,7 +51,7 @@ exports.main = function(options, callbacks) {
 			}catch(err){console.log("err: "+err);}
 		}
 	}).get();
-	*/
+	
 	//END Ginyas function
 
 	//links to be shown on generated_link.html
