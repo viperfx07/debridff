@@ -1,5 +1,9 @@
 //Logging toggle
-const DEBUG = false; //set true to enable logging
+const DEBUG = true; //set true to enable logging
+
+//Hostname
+const DM_ROOT = "http://www.multi-debrid.com/";
+const MD_DM = 'http://www.multi-debrid.com/downloader/';
 					  
 //Defining components variable
 var ss = require("simple-storage");
@@ -81,7 +85,7 @@ exports.main = function(options, callbacks) {
 	function subWindowMsgHandler(msg){
 		console.log("subWinMsgHandler msg.type: " + msg.type);
 		if(msg.type=="open_debrid")
-			win.open("http://www.debridmax.com/");
+			win.open(DM_ROOT);
 		else if(msg.type=="open_donate")
 			win.open("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VPJ5YQHBG7L36");
 		else if(msg.type=="clearLinkCache")	
@@ -187,10 +191,10 @@ exports.main = function(options, callbacks) {
 	  }
 	});
 
-	//Debridmax Widget
+	//MultiDebrid Widget
 	var debridWidget = require("widget").Widget({
 		id: "debrid_widget",
-		label: "DebridMax",
+		label: "MultiDebrid",
 		contentURL: data.url("icon19.png"),
 		panel: panels.Panel({
 			height: 150,
@@ -202,16 +206,20 @@ exports.main = function(options, callbacks) {
 							
 				hiddenFrames.add(hiddenFrames.HiddenFrame({
 							  onReady: function() {
-								this.element.contentWindow.location = "http://www.debridmax.com/multimax/?lang=en";
+								this.element.contentWindow.location = DM_ROOT;
 								let self = this;
 								this.element.addEventListener("DOMContentLoaded", function() {
-									if(self.element.contentDocument.body.querySelector("h3"))
+									if(self.element.contentDocument.body.querySelector("div.alert.alert-info b, div.alert.alert-info strong"))
 									{
 										var detailsarray = [];
-										for each(var detail in self.element.contentDocument.body.querySelectorAll("#shadowBox>b,#shadowBox>strong"))
+										var z = 0;
+										for each(var detail in self.element.contentDocument.body.querySelectorAll("div.alert.alert-info b, div.alert.alert-info strong"))
 										{
-											if(detail.innerHTML)
+											if(detail.innerHTML.length>0 || typeof detail.innerHTML != "undefined")
+											{
+												console.log(detail.innerHTML);
 												detailsarray.push(detail.innerHTML);
+											}
 										}
 										debridWidget.panel.port.emit("parseLoginDetails",{'htmlstr':detailsarray, 'isLoggedIn':true});
 									}
@@ -228,7 +236,7 @@ exports.main = function(options, callbacks) {
 						this.hide();
 						break;
 					case "openLoginTab":
-						require("tabs").open("http://www.debridmax.com/login.php");
+						require("tabs").open(DM_ROOT + "login.php");
 						break;
 					case "openSubWin":
 						this.postMessage({'type':'openSubWin'});
@@ -243,7 +251,7 @@ exports.main = function(options, callbacks) {
 				
 	//Selection context menu
 	var selectionContextMenu = contextMenu.Menu({
-		label: "Debridmax",
+		label: "MultiDebrid",
 		context: contextMenu.SelectionContext(),
 		contentScriptWhen: 'ready',
 		contentScriptFile: [data.url("selectioncontextMenu.js"),data.url("loginChecker.js")],
@@ -256,7 +264,7 @@ exports.main = function(options, callbacks) {
 
 	//Link context menu
 	var linkContextMenu = contextMenu.Menu({
-		label: "Debridmax",
+		label: "MultiDebrid",
 		context: contextMenu.SelectorContext("a[href]"),
 		contentScriptWhen: 'ready',
 		contentScriptFile: [data.url("linkcontextMenu.js"),data.url("loginChecker.js")],

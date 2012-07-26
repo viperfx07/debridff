@@ -1,0 +1,1 @@
+cfx run -b "C:\Program Files (x86)\Mozilla Firefox\firefox.exe" -p "C:\Users\victor.tanudjaja\AppData\Roaming\Mozilla\Firefox\Profiles\spg4p88k.default"

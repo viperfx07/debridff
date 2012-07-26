@@ -25,7 +25,7 @@ function setPopupPage(isLoggedIn,login_details){
 	}
 	else{
 		$("#subWindowButton").hide();
-		$("p#user").html("Note: You are not currently logged in to Debridmax. Please login before using the tool." + '(<a href="#" id="login">Login</a>)');
+		$("p#user").html("Note: You are not currently logged in to MultiDebrid. Please login before using the tool." + '(<a href="#" id="login">Login</a>)');
 	}
 	
 	$("#dm_details").show();
@@ -33,7 +33,7 @@ function setPopupPage(isLoggedIn,login_details){
 			
 	//Add root server url prior to the img src (this for "OK" image)
 	$("img").each(function(){
-		$(this).attr({src:"http://www.debridmax.com/" + $(this).attr('src')});
+		$(this).attr({src:"http://www.multi-debrid.com/" + $(this).attr('src')});
 	});
 	
 	$(".debridff-loader").hide(); //hide loader
