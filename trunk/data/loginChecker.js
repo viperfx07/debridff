@@ -3,7 +3,8 @@ self.port.on("parseLoginDetails",function(data){
 	console.log("parseLoginDetails");
 	if(data.isLoggedIn)
 	{
-		var details = data.htmlstr;
+		var details = [];
+		details = ((data.htmlstr).length>0) ? data.htmlstr : '';
 		login_details.user = "Hello, " + details[0];
 		login_details.acc_type = "Account type: " + details[1];
 		login_details.points = "Points: " + (details[2]).replace(/&nbsp;/ig,'');

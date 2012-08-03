@@ -213,22 +213,27 @@ exports.main = function(options, callbacks) {
 									{
 										var detailsarray = [];
 										var z = 0;
-										for each(var detail in self.element.contentDocument.body.querySelectorAll("div.alert.alert-info b, div.alert.alert-info strong"))
-										{
-											if(detail.innerHTML.length>0 || typeof detail.innerHTML != "undefined")
+										
+										var elements = [];
+										elements = self.element.contentDocument.body.querySelectorAll("div.alert.alert-info b, div.alert.alert-info strong");
+																				
+										for (var i=0; i<elements.length; i++){
+											if(elements[i].innerHTML.length>0 || typeof elements[i].innerHTML != "undefined")
 											{
-												console.log(detail.innerHTML);
-												detailsarray.push(detail.innerHTML);
+												detailsarray.push(elements[i].innerHTML);
 											}
 										}
-										debridWidget.panel.port.emit("parseLoginDetails",{'htmlstr':detailsarray, 'isLoggedIn':true});
+										
+										if(detailsarray.length>0)
+											debridWidget.panel.port.emit("parseLoginDetails",{'htmlstr':detailsarray, 'isLoggedIn':true});
+										else
+											debridWidget.panel.port.emit("parseLoginDetails", {'isLoggedIn':false});
 									}
 									else
 										debridWidget.panel.port.emit("parseLoginDetails", {'isLoggedIn':false})
 								}, true, true);
 							  }
 							}));
-				
 			},
 			onMessage: function(m){
 				switch (m){
