@@ -13,7 +13,7 @@ self.on('message',function(msg){
 
 //Set login details and other properties for popup.html
 function setPopupPage(isLoggedIn,login_details){ 
-				
+	console.log(isLoggedIn);		
 	if(isLoggedIn)
 	{
 		$("p#user").text(login_details.user);
@@ -24,6 +24,7 @@ function setPopupPage(isLoggedIn,login_details){
 		$("#subWindowButton").show();
 	}
 	else{
+		login_details = [];
 		$("#subWindowButton").hide();
 		$("p#user").html("Note: You are not currently logged in to MultiDebrid. Please login before using the tool." + '(<a href="#" id="login">Login</a>)');
 	}
