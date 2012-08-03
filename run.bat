@@ -1,1 +1,1 @@
-cfx run -b "C:\Program Files (x86)\Mozilla Firefox\firefox.exe" -p "C:\Users\Vic\AppData\Roaming\Mozilla\Firefox\Profiles\micy5rh1.default"
+cfx run -b "C:\Program Files (x86)\Mozilla Firefox\firefox.exe" -p "C:\Users\Vic\AppData\Roaming\Mozilla\Firefox\Profiles\oi1sw4nl.default"
