@@ -5,27 +5,44 @@
 
 var _linkFounds = [];
 var selectedText = '';
-var buttonIcon = 'url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAACPklEQVR42qVSO2iaYRT1EY0ajYZIUTFBBUuyJPiCIgZRdLOBbBVRCVbpUJAOxcGhQRDpUoSCpVKlIrZQiQhugQw6OisIGQJOCuLg4Hp6v4+aRhJaaIfz893z33vuUyAQCMCg1Wqh0WiwslcQi8V3b5FQ+OC/gH0UCgWcTidsNttagF6vRz6fh9fr5XZifx/u7W0I7wt5lErod3fhcrlwdHwM5eYmnkilkJFQMBhEuVxGOp2GSCTCS6rwUiLBi50dSMjmAt+JeE/lH1ksODEYUKIMLbkcJZUKgYMDvLu4wHOPB2nia8S3KOiSgt+SmGpjA4Jn5FiTyfCVhH5Q5hzZYZ0OH7a20CD+Fdl1en+h9zcCE2D4TG0/JfAZ6OlHhBRPyNlObYTDYdgOD/FarcYnCk4RryPnj1Rpg5LEyVay7Ksh3ofP50M0GoXdbue29NdQFRTwZm8PJmrjwRbcbjfq9TpHo9FAKpWCnBzZahmXy+W4M5t+JpPhnNls/i0QiURwc3ODs7MzZLNZzOdz+P1+mEwmLBYLjMdjGI1GLjgcDrFcLvnW1gT6/f5dWcViEVdXV7DQZm5vb9FsNnF+fo5QKIRKpcIT/FEgmUxiNBrBarVygVgshna7jVKpxKv8q0ChUECv1+MVsNYMdB+TyYT7MO5RAdabw+FAIpHAdDrlmdgMBoMBv8Lr62tUq1U+h9lsti7ATrbb7XK0Wi2cnp7yievooGq1GneMx+MIBAJQ0210Oh0c0JU+egf/gP8T+Al1/60ec2qEYAAAAABJRU5ErkJggg==)';
+var buttonIcon = 'url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAACH0lEQVQ4jYWSXU8TQRSGn5ldytJtK13aQAtob8CvhKBRb7w38eOn+Ls08cIbY/TOCyExWmOkgAYJgUKEFhCWFtx2d2e82N02TQDPZCaZc86ced9zXlHdcDX/sQ+rh+y5nXNjphCXP948+MvesXdh3AQQyaEhgZP4lrdb8aWXMpBnGhKkECBAK42KE6UQNNwOQaiwUwamBCEFSmn8UNMNFKHSmFII3nxZo+11eXhzmkrxCkGoeLmwwu5xh/H8GPMVh9H0UJ/W/hkNt4PnK0whBG+razTcU9pel+eP71GrN3m1uALAs/tZ7lzLMVvKDHB//XmX2vYJphQR5kIuTW2rgQa+ru+Sty2OTr0e1+rGMe+/NxkekjyZH+fRXJGl+gkyqTg9lqPtdWm6ZyzXm8xVJuJIf8rDQxIJfPr1h4xlkksbyGSKhpRUiqNU13+zte9yY6oQv49arrXG90M8P8QPVFTQlH0dZEZSjI/avPhYo+xkydtW738do7AtAzTk7aih7qnfp5AyJbemChy1PWbLDk7GGmBQzltcL2W5PZ3j6d0Jfuy06PgKU/cKGMyUHQBmSg6GEUELVQR30hlh0hkBYGnL5d23PYIwRKzutHQiMykioQghEAIWfx6w2WgRKI3WkV9rjWlIglBFOkiUh4ZQ67hvUeOuFm1W6keAjtQaxzp+SBgXNQcHNWilvEU2neLQPbsgA6Tg8vVgptD7+bz9D8Hb+X4S9sQHAAAAAElFTkSuQmCC)';
 
 var hostFilter = new Array(
-     /^(http|https):\/\/(\w+\.)?rapidshare\.com\/(files\/[^\"\r\n< ]+|#!download[^\"\r\n< ]+)/g,
-    /^http:\/\/(\w+\.)?megaupload\.com\/([a-zA-Z]+\/)?\?[a-zA-Z]=[0-9a-zA-Z]{8}/g,
-    /^http:\/\/(\w+\.)?megavideo\.com\/([a-zA-Z]+\/)?\?[a-zA-Z]=[0-9a-zA-Z]{8}/g,
-    /^http:\/\/(\w+\.)?depositfiles\.com\/([a-zA-Z]+\/)?files\/[^\"\r\n< ]+/g,
-    /^http:\/\/(\w+\.)?hotfile\.com\/dl\/[0-9a-zA-Z]+\/[\/[0-9a-zA-Z]+\//g,
-    /^http:\/\/(\w+\.)?u(ploaded|l)\.to\/(file\/|\?id=|)[0-9a-zA-Z]{6}/g,  
-    /^http:\/\/(\w+\.)?uploading\.com\/files\/[a-zA-Z0-9]+\//g,    
-    /^http:\/\/(\w+\.)?filesonic\.(com|fr|de|it|net|org)\/file\/[^\"\r\n< ]+/g,
-    /^http:\/\/(\w+\.)?fileserve\.com\/file\/[^\"\r\n< ]+/g,
-	/^http:\/\/(\w+\.)?videobb.com\/video\/[^\"\r\n< ]+/g,
-	/^http:\/\/dl\.free\.fr\/[^\"\r\n< ]+/g,
-	/^http:\/\/(\w+\.)?uploadstation\.com\/file\/[^\"\r\n< ]+/g,
-	/^http:\/\/(\w+\.)?duckload\.com\/(download|dl|play)\/[^\/\"\r\n< ]+/g,
-	/^http:\/\/(\w+\.)?netload\.in\/[^\"\r\n< ]+/g,
-	/^http:\/\/(\w+\.)?wupload\.com\/file\/[^\"\r\n< ]+/g,
-	/^http:\/\/(\w+\.)?4shared\.com\/[a-z]+\/[^( |"|>|<|\r\n\|\n|$)]+/g,
-	/^http:\/\/(\w+\.)?filefactory\.com\/file\/[0-9a-zA-Z]+\//g,
-	/^http:\/\/(\w+\.)?oron\.com\/[0-9a-zA-Z]+\//g
+    /(http|https):\/\/(\w+\.)?rapidshare\.com\/(files\/[^\"\r\n< ]+|#!download[^\"\r\n< ]+)/g,
+    /http:\/\/(\w+\.)?megaupload\.com\/([a-zA-Z]+\/)?\?[a-zA-Z]=[0-9a-zA-Z]{8}/g,
+    /http:\/\/(\w+\.)?megavideo\.com\/([a-zA-Z]+\/)?\?[a-zA-Z]=[0-9a-zA-Z]{8}/g,
+    /http:\/\/(\w+\.)?depositfiles\.com\/([a-zA-Z]+\/)?files\/[^\"\r\n< ]+/g,
+    /http:\/\/(\w+\.)?hotfile\.com\/dl\/[0-9a-zA-Z]+\/[\/[0-9a-zA-Z]+\//g,
+    /http:\/\/(\w+\.)?u(ploaded|l)\.to\/(file\/|\?id=|)[0-9a-zA-Z]{6}/g,  
+    /http:\/\/(\w+\.)?uploading\.com\/files\/[a-zA-Z0-9]+\//g,    
+    /http:\/\/(\w+\.)?filesonic\.(com|fr|de|it|net|org)\/file\/[^\"\r\n< ]+/g,
+    /http:\/\/(\w+\.)?fileserve\.com\/file\/[^\"\r\n< ]+/g,
+	/http:\/\/(\w+\.)?videobb.com\/video\/[^\"\r\n< ]+/g,
+	/http:\/\/dl\.free\.fr\/[^\"\r\n< ]+/g,
+	/http:\/\/(\w+\.)?uploadstation\.com\/file\/[^\"\r\n< ]+/g,
+	/http:\/\/(\w+\.)?duckload\.com\/(download|dl|play)\/[^\/\"\r\n< ]+/g,
+	/http:\/\/(\w+\.)?netload\.in\/[^\"\r\n< ]+/g,
+	/http:\/\/(\w+\.)?wupload\.com\/file\/[^\"\r\n< ]+/g,
+	/http:\/\/(\w+\.)?4shared\.com\/[a-z]+\/[^( |"|>|<|\r\n\|\n|$)]+/g,
+	/http:\/\/(\w+\.)?filefactory\.com\/file\/[0-9a-zA-Z]+\//g,
+	/http:\/\/(\w+\.)?oron\.com\/[^\"\r\n< ]+/g,
+	/http:\/\/(\w+\.)?megashares\.com\/(dl\/[0-9a-zA-Z]+\/[^( |"|>|<|\r\n\|\n|$)]+|[0-9a-zA-Z?\/=]+)/g,   
+	/http:\/\/(\w+\.)?transitfiles.com\/dl\/[0-9a-zA-Z]{8}/g,
+	/http:\/\/(\w+\.)?bitshare\.com\/(files\/[^( |"|>|<|\r\n\|\n|$)]+|\?f=[^( |"|>|<|\r\n\|\n|$)]+)/g,
+	/http:\/\/(\w+\.)?(easy-share|crocko)\.com\/[0-9]{10}\//g,
+	/http:\/\/(\w+\.)?uploadbox\.com\/([a-zA-Z]+\/)?files\/[0-9a-z]+[^( |"|>|<|\r\n\|\n|$)]+/g,
+	/http:\/\/(www\.)?purevid\.com\/v\/[^( |"|>|<|\r\n\|\n|$)]+/g,
+	/http:\/\/(www\.)?(uploadhere|uploadking|jumbofiles)\.com\/[^( |"|>|<|\r\n\|\n|$)]+/g	,
+	/http:\/\/(\w+\.)?freakshare\.(net|com)\/files\/[0-9a-zA-Z]+\/[^( |"|>|<|\r\n\|\n|$)]+/g,
+	/http:\/\/(www\.)?uptobox\.com\/[^( |"|>|<|\r\n\|\n|$)]+/g,
+	/(http):\/\/(([0-9a-zA-Z]+)\.)?1fichier\.com\//g,
+	/http:\/\/(\w+\.)?bayfiles\.com\/([a-zA-Z]+\/)?file\/[^\"\r\n< ]+/g,
+	/http:\/\/(\w+\.)?extabit\.com\/file\/[0-9a-zA-Z]+/g,
+	/(http):\/\/(\w+\.)?filepost\.com\/(files\/[^\"\r\n< ]+|#!download[^\"\r\n< ]+)/g,
+	/http:\/\/(\w+\.)?gigasize\.com\/(get)\/[^\/\"\r\n< ]+/g,
+	/http:\/\/(\w+\.)?letitbit\.net\/(download)\/[^\/\"\r\n< ]+/g,
+	/http:\/\/(\w+\.)?purevid\.com\/(v)\/[^\/\"\r\n< ]+/g,
+	/http:\/\/(\w+\.)?(turbobit.net|uploadboost.com|queenshare.com)\/[0-9a-zA-Z]+/g
 	);
 	
 function checkMultiLink(link) {
@@ -40,8 +57,7 @@ function checkMultiLink(link) {
 	return (result.length) ? result : 0;
 }
 
-var ContextButton = function()
-{
+var ContextButton = function(){
 	this._button;
 	this._isAppended = false;
 	this._hova = false;

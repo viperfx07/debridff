@@ -15,26 +15,19 @@
 			overflow-x:hidden;
 		}
 		.container {height:350px; width: 435px; margin: 10px auto; float:left;}
-		#logo {width:257px; float:left;}
+		#logo {width:257px; float:left; padding:10px 0 0 10px;}
 		#donate {float:left; margin:10px auto;}
 		#line_counter {font-style: italic; color: #ff3;}
 		</style>
-		<script>
-		   function changeScreenSize(w,h)
-			 {
-			   window.resizeTo( w,h )
-			 }
-		</script>
 	</head>
-	<body onload="changeScreenSize(455,510)">
-		<div id="logo"><a id="logolink" href="#"><img src='logo.png' alt="logo" height="100" /></a></div>
+	<body>
+		<div id="logo"><a id="logolink" href="#"><img src='logo.png' width='83px'/><img src='logo.png' width='83px'/><img src='logo.png' width='83px'/></a></div>
 		<div id="donate">
 			<a id="donatelink" href="#"><img src="btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!" /></a>
 			<img alt="" border="0" src="pixel.gif" width="1" height="1" />
 		</div>
 		<div class="container">
 			<hr />
-			<div id="text1">Note: Enter Filesonic link(s) with www in front of filesonic.com</div>
 			<span id="text2">Enter your links below:</span>
 			<textarea id="debridff-link" cols="48" rows="10"></textarea>
 			<br />
